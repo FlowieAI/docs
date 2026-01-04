@@ -1,0 +1,95 @@
+---
+title: "Create Document"
+api: "POST /documents"
+description: "Upload a new document"
+---
+
+## Overview
+
+Upload a new document to Flowie. The document goes through:
+1. Upload to secure storage
+2. Virus scanning (quarantine)
+3. OCR processing (if applicable)
+4. Indexing for search
+
+## Request Body
+
+<ParamField body="name" type="string" required>
+  Document name
+</ParamField>
+
+<ParamField body="organizationId" type="string" required>
+  Organization ID
+</ParamField>
+
+<ParamField body="folderId" type="string">
+  Target folder ID (optional)
+</ParamField>
+
+<ParamField body="file" type="file" required>
+  File to upload (multipart/form-data)
+</ParamField>
+
+<ParamField body="linkedObjects" type="array">
+  Objects to link the document to
+</ParamField>
+
+## Supported File Types
+
+| Type | Extensions |
+|------|------------|
+| Documents | PDF, DOCX, DOC, XLS, XLSX |
+| Images | PNG, JPG, JPEG, TIFF |
+| Electronic invoices | UBL, Factur-X, ZUGFeRD |
+
+## Example
+
+```bash
+curl -X POST https://back.flowieapp.com/documents \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "name=Invoice_2024_002.pdf" \
+  -F "organizationId=org_abc123" \
+  -F "folderId=folder_001" \
+  -F "file=@/path/to/invoice.pdf" \
+  -F "linkedObjects=[{\"objectType\":\"invoice\",\"objectId\":\"inv_new\"}]"
+```
+
+<ResponseExample>
+```json
+{
+  "data": {
+    "id": "doc_new123",
+    "name": "Invoice_2024_002.pdf",
+    "status": "processing",
+    "uploadUrl": "https://storage.googleapis.com/upload/...",
+    "message": "Document uploaded, OCR processing started"
+  }
+}
+```
+</ResponseExample>
+
+## Processing Status
+
+After upload, poll the document status:
+
+| Status | Description |
+|--------|-------------|
+| `processing` | OCR in progress |
+| `active` | Ready for use |
+| `quarantine` | Virus scan pending |
+| `failed` | Processing failed |
+
+## OCR Webhook
+
+Configure a webhook to receive OCR completion events:
+
+```json
+{
+  "event": "document.ocr.completed",
+  "data": {
+    "documentId": "doc_new123",
+    "versionId": "ver_001",
+    "status": "completed"
+  }
+}
+```

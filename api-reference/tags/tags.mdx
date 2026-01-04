@@ -1,0 +1,171 @@
+---
+title: "Tags"
+api: "GET /organizations/{org_id}/tags"
+description: "Create and manage individual tags"
+---
+
+## List Tags
+
+Get all tags for an organization (across all tag groups).
+
+```bash
+curl https://back.flowieapp.com/organizations/org_abc123/tags \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+## Get Tags in a Group
+
+```
+GET /organizations/{org_id}/tagGroups/{tagGroupId}/tags
+```
+
+<ResponseExample>
+```json
+{
+  "data": [
+    {
+      "tagId": "tag_001",
+      "tagGroupId": "tg_001",
+      "name": "Operations",
+      "value": null,
+      "externalId": "CC-100",
+      "description": "Operations department",
+      "keywords": ["ops", "operations", "warehouse"],
+      "parentId": null,
+      "parentLineage": [],
+      "parentDepth": 0,
+      "children": [
+        {
+          "tagId": "tag_003",
+          "name": "Warehouse"
+        },
+        {
+          "tagId": "tag_004",
+          "name": "Logistics"
+        }
+      ]
+    }
+  ]
+}
+```
+</ResponseExample>
+
+## Search Tags
+
+```
+GET /organizations/{org_id}/tags/search
+```
+
+### Query Parameters
+
+<ParamField query="q" type="string" required>
+  Search query (searches name, keywords)
+</ParamField>
+
+<ParamField query="tag_group_id" type="string">
+  Filter by tag group
+</ParamField>
+
+<ParamField query="limit" type="integer" default="20">
+  Maximum results
+</ParamField>
+
+### Example
+
+```bash
+curl "https://back.flowieapp.com/organizations/org_abc123/tags/search?q=marketing" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+## Create Tag
+
+```
+POST /organizations/{org_id}/tags
+```
+
+### Request Body
+
+<ParamField body="tagGroupId" type="string" required>
+  Tag group ID
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  Tag name
+</ParamField>
+
+<ParamField body="value" type="string">
+  Optional value (for numeric/GL code tags)
+</ParamField>
+
+<ParamField body="externalId" type="string">
+  External system ID (ERP, accounting)
+</ParamField>
+
+<ParamField body="description" type="string">
+  Tag description
+</ParamField>
+
+<ParamField body="keywords" type="array">
+  Search keywords for auto-tagging
+</ParamField>
+
+<ParamField body="parentId" type="string">
+  Parent tag ID for hierarchy
+</ParamField>
+
+### Example
+
+```bash
+curl -X POST https://back.flowieapp.com/organizations/org_abc123/tags \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tagGroupId": "tg_001",
+    "name": "Marketing",
+    "externalId": "CC-200",
+    "description": "Marketing department expenses",
+    "keywords": ["marketing", "advertising", "campaigns"]
+  }'
+```
+
+## Bulk Create Tags
+
+```
+POST /organizations/{org_id}/tags/bulk
+```
+
+Import multiple tags at once:
+
+```json
+{
+  "tags": [
+    {
+      "tagGroupId": "tg_001",
+      "name": "IT",
+      "externalId": "CC-300"
+    },
+    {
+      "tagGroupId": "tg_001",
+      "name": "Infrastructure",
+      "parentId": "tag_it",
+      "externalId": "CC-301"
+    }
+  ]
+}
+```
+
+## Update Tag
+
+```
+PUT /organizations/{org_id}/tags/{tag_id}
+```
+
+## Delete Tag
+
+```
+DELETE /organizations/{org_id}/tags/{tag_id}
+```
+
+<Note>
+  Deleting a tag removes all object associations. Consider deactivating instead for audit trail.
+</Note>

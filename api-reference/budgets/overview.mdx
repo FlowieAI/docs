@@ -1,0 +1,84 @@
+---
+title: "Budgets Overview"
+description: "Budget management and financial tracking API"
+---
+
+## Overview
+
+The Budget Service provides comprehensive financial budget management with:
+
+- **Hierarchical budgets**: Parent/child relationships for roll-up reporting
+- **Transaction tracking**: Link to PRs, POs, invoices, and payments
+- **Real-time metrics**: Available, committed, spent amounts
+- **Access control**: SpiceDB-based permissions
+- **Batch operations**: High-volume imports up to 5000 items
+
+## Key Concepts
+
+### Budget Structure
+
+```json
+{
+  "id": "bud_123",
+  "name": "Q1 2024 Marketing",
+  "initialAmount": 50000,
+  "currentAmount": 50000,
+  "freeAmount": 35000,
+  "currency": "EUR",
+  "recurrence": "QUARTERLY",
+  "startDate": "2024-01-01",
+  "endDate": "2024-03-31"
+}
+```
+
+### Transaction Types
+
+| Type | Description | Impact |
+|------|-------------|--------|
+| `PURCHASE_REQUEST` | PR created | Asked/Planned |
+| `PURCHASE_ORDER` | PO approved | Committed |
+| `INVOICE` | Invoice received | Scheduled/Actual |
+| `PAYMENT` | Payment made | Actual spend |
+| `DEPOSIT` | Funds added | Increases budget |
+| `MANUAL` | Manual adjustment | Custom |
+
+### Transaction Status
+
+| Status | Description |
+|--------|-------------|
+| `REQUESTED` | PR submitted |
+| `VALIDATED` | PR approved |
+| `SCHEDULED` | Invoice scheduled for payment |
+| `EXECUTED` | Payment completed |
+| `CLOSED` | Transaction closed |
+
+### Budget Metrics
+
+Real-time calculations:
+
+| Metric | Calculation |
+|--------|-------------|
+| **Asked** | Sum of PRs in REQUESTED status |
+| **Planned** | Sum of PRs in VALIDATED status |
+| **Engaged** | Sum of POs (not closed) |
+| **Scheduled** | Sum of items in SCHEDULED status |
+| **Paid** | Sum of items in EXECUTED status |
+| **Available** | currentAmount - committed - spent |
+
+### Budget Health
+
+| Health | Condition |
+|--------|-----------|
+| `healthy` | freeAmount >= 20% of currentAmount |
+| `warning` | freeAmount between 5-20% |
+| `critical` | freeAmount < 5% |
+| `overbudget` | freeAmount < 0 |
+
+## API Endpoints Summary
+
+| Resource | Key Endpoints |
+|----------|---------------|
+| Budgets | Create, list, get, update, close, duplicate |
+| Transactions | Add, batch create, reassign, delete |
+| Metrics | Budget metrics, global metrics |
+| History | Amount change audit trail |

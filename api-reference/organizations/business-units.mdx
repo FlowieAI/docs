@@ -1,0 +1,111 @@
+---
+title: "Business Units"
+api: "GET /organizations/{id}/business-units"
+description: "Manage organization business units (departments, cost centers)"
+---
+
+## Overview
+
+Business units represent organizational subdivisions such as departments, cost centers, or regional offices. They support hierarchical structures and are used for:
+
+- Approval routing
+- Budget allocation
+- Access control
+- Reporting segmentation
+
+## List Business Units
+
+```bash
+curl https://back.flowieapp.com/organizations/org_abc123/business-units \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+<ResponseExample>
+```json
+{
+  "data": [
+    {
+      "id": "bu_001",
+      "name": "Finance",
+      "code": "FIN",
+      "parentId": null,
+      "children": [
+        {
+          "id": "bu_002",
+          "name": "Accounting",
+          "code": "ACC",
+          "parentId": "bu_001"
+        },
+        {
+          "id": "bu_003",
+          "name": "Treasury",
+          "code": "TRS",
+          "parentId": "bu_001"
+        }
+      ]
+    },
+    {
+      "id": "bu_004",
+      "name": "Operations",
+      "code": "OPS",
+      "parentId": null,
+      "children": []
+    }
+  ]
+}
+```
+</ResponseExample>
+
+## Create Business Unit
+
+```
+POST /organizations/{id}/business-units
+```
+
+### Request Body
+
+<ParamField body="name" type="string" required>
+  Business unit name
+</ParamField>
+
+<ParamField body="code" type="string">
+  Short code (e.g., "FIN", "OPS")
+</ParamField>
+
+<ParamField body="parentId" type="string">
+  Parent business unit ID for hierarchy
+</ParamField>
+
+<ParamField body="managerId" type="string">
+  User ID of the business unit manager
+</ParamField>
+
+### Example
+
+```bash
+curl -X POST https://back.flowieapp.com/organizations/org_abc123/business-units \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Marketing",
+    "code": "MKT",
+    "parentId": null,
+    "managerId": "user_123"
+  }'
+```
+
+## Update Business Unit
+
+```
+PUT /organizations/{id}/business-units/{buId}
+```
+
+## Delete Business Unit
+
+```
+DELETE /organizations/{id}/business-units/{buId}
+```
+
+<Warning>
+  Deleting a business unit will reassign its members and documents to the parent unit (or organization root).
+</Warning>

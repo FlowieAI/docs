@@ -49,6 +49,33 @@
             ]
           },
           {
+            "group": "Organizations",
+            "pages": [
+              "api-reference/organizations/list",
+              "api-reference/organizations/get",
+              "api-reference/organizations/members",
+              "api-reference/organizations/business-units"
+            ]
+          },
+          {
+            "group": "Documents",
+            "pages": [
+              "api-reference/documents/list",
+              "api-reference/documents/get",
+              "api-reference/documents/create",
+              "api-reference/documents/download",
+              "api-reference/documents/folders"
+            ]
+          },
+          {
+            "group": "Transactions",
+            "pages": [
+              "api-reference/transactions/purchase-requests",
+              "api-reference/transactions/purchase-orders-v4",
+              "api-reference/transactions/invoices-v3"
+            ]
+          },
+          {
             "group": "Invoices",
             "pages": [
               "api-reference/invoices/list",
@@ -67,13 +94,20 @@
           {
             "group": "Budgets",
             "pages": [
+              "api-reference/budgets/overview",
               "api-reference/budgets/list",
-              "api-reference/budgets/get"
+              "api-reference/budgets/get",
+              "api-reference/budgets/create",
+              "api-reference/budgets/transactions"
             ]
           },
           {
             "group": "Tags",
             "pages": [
+              "api-reference/tags/overview",
+              "api-reference/tags/tag-groups",
+              "api-reference/tags/tags",
+              "api-reference/tags/object-tags",
               "api-reference/tags/list",
               "api-reference/tags/create"
             ]

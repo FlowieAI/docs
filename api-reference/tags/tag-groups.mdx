@@ -1,0 +1,154 @@
+---
+title: "Tag Groups"
+api: "GET /organizations/{org_id}/tagGroups"
+description: "Manage tag groups and their configuration"
+---
+
+## List Tag Groups
+
+Retrieve all tag groups for an organization.
+
+```bash
+curl https://back.flowieapp.com/organizations/org_abc123/tagGroups \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+<ResponseExample>
+```json
+{
+  "data": [
+    {
+      "tagGroupId": "tg_001",
+      "name": "Cost Center",
+      "shortName": "CC",
+      "assignmentRule": "SINGLE",
+      "organizationId": "org_abc123",
+      "description": "Accounting cost centers",
+      "objectTypes": ["invoice", "invoice_line", "purchase_order"],
+      "businessUnits": [],
+      "tags": [
+        {
+          "tagId": "tag_001",
+          "name": "Operations",
+          "parentId": null
+        },
+        {
+          "tagId": "tag_002",
+          "name": "Finance",
+          "parentId": null
+        }
+      ],
+      "createdAt": "2024-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+## Create Tag Group
+
+```
+POST /organizations/{org_id}/tagGroups
+```
+
+### Request Body
+
+<ParamField body="name" type="string" required>
+  Tag group name
+</ParamField>
+
+<ParamField body="shortName" type="string">
+  Short abbreviation (e.g., "CC" for Cost Center)
+</ParamField>
+
+<ParamField body="assignmentRule" type="string" required>
+  Assignment rule: `SINGLE`, `MULTIPLE`, `RATIO`, `LEAF_ONLY`
+</ParamField>
+
+<ParamField body="description" type="string">
+  Description of the tag group
+</ParamField>
+
+<ParamField body="objectTypes" type="array">
+  Allowed object types for this group
+</ParamField>
+
+<ParamField body="businessUnits" type="array">
+  Restrict to specific business units (empty = all)
+</ParamField>
+
+### Example
+
+```bash
+curl -X POST https://back.flowieapp.com/organizations/org_abc123/tagGroups \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Project",
+    "shortName": "PRJ",
+    "assignmentRule": "MULTIPLE",
+    "description": "Project tracking tags",
+    "objectTypes": ["invoice", "purchase_order", "purchase_request"]
+  }'
+```
+
+## Bulk Create Tag Groups
+
+```
+POST /organizations/{org_id}/tagGroups/bulk
+```
+
+Create multiple tag groups in one request.
+
+```json
+{
+  "tagGroups": [
+    {
+      "name": "Cost Center",
+      "assignmentRule": "SINGLE"
+    },
+    {
+      "name": "Project",
+      "assignmentRule": "MULTIPLE"
+    }
+  ]
+}
+```
+
+## Update Tag Group
+
+```
+PUT /organizations/{org_id}/tagGroups/{id}
+```
+
+## Delete Tag Group
+
+```
+DELETE /organizations/{org_id}/tagGroups/{id}
+```
+
+<Warning>
+  Deleting a tag group removes all tags and object associations within it.
+</Warning>
+
+## Update Translations
+
+```
+PUT /organizations/{org_id}/tagGroups/{id}/translations
+```
+
+Update translations for multilingual support:
+
+```json
+{
+  "name": {
+    "en": "Cost Center",
+    "fr": "Centre de coût",
+    "de": "Kostenstelle"
+  },
+  "description": {
+    "en": "Accounting cost centers",
+    "fr": "Centres de coût comptables"
+  }
+}
+```

@@ -1,0 +1,136 @@
+---
+title: "Create Budget"
+api: "POST /budget/organizations/{org_id}/budgets"
+description: "Create a new budget"
+---
+
+## Request Body
+
+<ParamField body="name" type="string" required>
+  Budget name
+</ParamField>
+
+<ParamField body="initialAmount" type="number" required>
+  Starting budget amount
+</ParamField>
+
+<ParamField body="currency" type="string" required>
+  Currency code (EUR, USD, etc.)
+</ParamField>
+
+<ParamField body="startDate" type="string" required>
+  Budget start date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField body="endDate" type="string">
+  Budget end date (optional)
+</ParamField>
+
+<ParamField body="recurrence" type="string">
+  Recurrence: `ONESHOT`, `MONTHLY`, `QUARTERLY`, `YEARLY`
+</ParamField>
+
+<ParamField body="parentBudgetId" type="string">
+  Parent budget ID for hierarchy
+</ParamField>
+
+<ParamField body="businessUnitId" type="string">
+  Associated business unit
+</ParamField>
+
+<ParamField body="allowOverbudget" type="boolean" default="false">
+  Allow spending over budget
+</ParamField>
+
+<ParamField body="description" type="string">
+  Budget description
+</ParamField>
+
+<ParamField body="internalReference" type="string">
+  Internal reference code
+</ParamField>
+
+## Example
+
+```bash
+curl -X POST https://back.flowieapp.com/budget/organizations/org_abc123/budgets \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Q1 2024 Marketing",
+    "initialAmount": 50000,
+    "currency": "EUR",
+    "startDate": "2024-01-01",
+    "endDate": "2024-03-31",
+    "recurrence": "QUARTERLY",
+    "businessUnitId": "bu_marketing",
+    "description": "Marketing department Q1 budget"
+  }'
+```
+
+<ResponseExample>
+```json
+{
+  "data": {
+    "id": "bud_new123",
+    "name": "Q1 2024 Marketing",
+    "initialAmount": 50000,
+    "currentAmount": 50000,
+    "freeAmount": 50000,
+    "currency": "EUR",
+    "organizationId": "org_abc123",
+    "businessUnitId": "bu_marketing",
+    "recurrence": "QUARTERLY",
+    "startDate": "2024-01-01",
+    "endDate": "2024-03-31",
+    "closed": false,
+    "allowOverbudget": false,
+    "createdAt": "2024-01-01T10:00:00Z"
+  }
+}
+```
+</ResponseExample>
+
+## Batch Create
+
+```
+POST /budget/organizations/{org_id}/budgets/batch
+```
+
+Create up to 1000 budgets in one request:
+
+```json
+{
+  "budgets": [
+    {
+      "name": "IT Q1 2024",
+      "initialAmount": 100000,
+      "currency": "EUR",
+      "startDate": "2024-01-01"
+    },
+    {
+      "name": "HR Q1 2024",
+      "initialAmount": 25000,
+      "currency": "EUR",
+      "startDate": "2024-01-01"
+    }
+  ]
+}
+```
+
+### Batch Response
+
+```json
+{
+  "created": [...],
+  "failed": [
+    {
+      "index": 2,
+      "error": "Invalid currency",
+      "budget": {...}
+    }
+  ],
+  "totalCreated": 5,
+  "totalFailed": 1
+}
+```

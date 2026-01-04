@@ -1,0 +1,174 @@
+---
+title: "Budget Transactions"
+api: "POST /budget/organizations/{org_id}/budgets/{budget_id}/transactions"
+description: "Track financial transactions against budgets"
+---
+
+## Overview
+
+Transactions link financial events (PRs, POs, invoices) to budgets for tracking committed and actual spend.
+
+## Add Transaction
+
+```
+POST /budget/organizations/{org_id}/budgets/{budget_id}/transactions
+```
+
+### Request Body
+
+<ParamField body="transactionType" type="string" required>
+  Type: `PURCHASE_REQUEST`, `PURCHASE_ORDER`, `INVOICE`, `PAYMENT`, `DEPOSIT`, `MANUAL`
+</ParamField>
+
+<ParamField body="transactionRefId" type="string">
+  Reference ID from source system (PR/PO/Invoice ID)
+</ParamField>
+
+<ParamField body="amount" type="number" required>
+  Transaction amount
+</ParamField>
+
+<ParamField body="currency" type="string" required>
+  Currency code
+</ParamField>
+
+<ParamField body="transactionStatus" type="string">
+  Status: `REQUESTED`, `VALIDATED`, `SCHEDULED`, `EXECUTED`, `CLOSED`
+</ParamField>
+
+<ParamField body="description" type="string">
+  Transaction description
+</ParamField>
+
+### Example
+
+```bash
+curl -X POST https://back.flowieapp.com/budget/organizations/org_abc123/budgets/bud_123/transactions \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "transactionType": "PURCHASE_ORDER",
+    "transactionRefId": "po_xyz789",
+    "amount": 5000,
+    "currency": "EUR",
+    "transactionStatus": "VALIDATED",
+    "description": "Office equipment order"
+  }'
+```
+
+## Line-Level Transactions
+
+Allocate individual document lines to different budgets:
+
+```json
+{
+  "transactionRefId": "PO-12345",
+  "transactionType": "PURCHASE_ORDER",
+  "lines": [
+    {
+      "lineId": "line-001",
+      "description": "Office supplies",
+      "amount": 500,
+      "budgetId": "bud_operations"
+    },
+    {
+      "lineId": "line-002",
+      "description": "IT Equipment",
+      "amount": 2000,
+      "budgetId": "bud_it"
+    }
+  ]
+}
+```
+
+## Batch Transactions
+
+### Single Budget (up to 1000)
+
+```
+POST /budget/organizations/{org_id}/budgets/{budget_id}/transactions/batch
+```
+
+### Multi-Budget (up to 5000)
+
+```
+POST /budget/organizations/{org_id}/transactions/batch
+```
+
+```json
+{
+  "transactions": [
+    {
+      "budgetId": "bud_123",
+      "transactionType": "MANUAL",
+      "amount": 500,
+      "currency": "EUR"
+    },
+    {
+      "budgetId": "bud_456",
+      "transactionType": "PURCHASE_ORDER",
+      "transactionRefId": "PO-123",
+      "amount": 1000,
+      "currency": "EUR"
+    }
+  ]
+}
+```
+
+### Minimal Response Mode
+
+For large imports, add `?minimalResponse=true` to reduce payload:
+
+```json
+{
+  "createdIds": ["tx_001", "tx_002", "tx_003"],
+  "totalCreated": 3,
+  "totalFailed": 0
+}
+```
+
+## List Transactions
+
+```
+GET /budget/organizations/{org_id}/budgets/{budget_id}/transactions
+```
+
+### Query Parameters
+
+<ParamField query="transactionType" type="string">
+  Filter by type
+</ParamField>
+
+<ParamField query="transactionStatus" type="string">
+  Filter by status
+</ParamField>
+
+<ParamField query="from_date" type="string">
+  Filter from date
+</ParamField>
+
+<ParamField query="to_date" type="string">
+  Filter to date
+</ParamField>
+
+## Reassign Transaction
+
+Move a transaction to a different budget:
+
+```
+PATCH /budget/organizations/{org_id}/transactions/{tx_id}/reassign
+```
+
+```json
+{
+  "newBudgetId": "bud_new"
+}
+```
+
+## Get Document Lines
+
+Get all line transactions for a document:
+
+```
+GET /budget/organizations/{org_id}/transactions/{ref_id}/lines
+```

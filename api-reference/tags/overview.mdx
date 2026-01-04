@@ -1,0 +1,76 @@
+---
+title: "Tags Overview"
+description: "Tag management system for categorization and analytics"
+---
+
+## Overview
+
+The Tag Service provides hierarchical tagging across all Flowie objects. Tags enable:
+
+- **Categorization**: Organize invoices, POs, suppliers by category
+- **Analytics**: Track spending by tag (cost centers, projects, GL codes)
+- **Auto-tagging**: AI-powered tag recommendations
+- **Integration**: Map to external ERP systems via external IDs
+
+## Key Concepts
+
+### Tag Groups
+
+Tag groups are collections of related tags with assignment rules:
+
+| Rule | Description |
+|------|-------------|
+| `SINGLE` | Only one tag from the group per object |
+| `MULTIPLE` | Multiple tags allowed |
+| `RATIO` | Tags with percentage allocation (must sum to 100%) |
+| `LEAF_ONLY` | Only leaf tags (no children) can be assigned |
+
+### Tag Hierarchy
+
+Tags support parent-child relationships for nested categorization:
+
+```
+Cost Centers (Tag Group)
+├── Operations
+│   ├── Warehouse
+│   └── Logistics
+├── Finance
+│   ├── Accounting
+│   └── Treasury
+└── IT
+    ├── Infrastructure
+    └── Development
+```
+
+### Object Tags
+
+Associate tags with any object type:
+- Invoices and invoice lines
+- Purchase orders and PO lines
+- Purchase requests
+- Suppliers
+- Contracts
+- Users
+
+## API Endpoints Summary
+
+| Resource | Endpoints |
+|----------|-----------|
+| Tag Groups | CRUD, bulk create, translations |
+| Tags | CRUD, search, bulk create, hierarchy |
+| Object Tags | Create, bulk, auto-recommend, duplicate |
+
+## MCP Integration
+
+Tags are accessible via MCP for AI agents:
+
+```
+https://flowie.mintlify.app/mcp
+```
+
+Available MCP tools:
+- `list_tag_groups`
+- `search_tags`
+- `get_object_tags`
+- `add_tag_to_object`
+- `recommend_tags`

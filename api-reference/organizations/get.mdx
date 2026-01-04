@@ -1,0 +1,82 @@
+---
+title: "Get Organization"
+api: "GET /organizations/{id}"
+description: "Retrieve a single organization by ID"
+---
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  Organization ID
+</ParamField>
+
+## Response
+
+Returns the organization object with full details including:
+- Organization profile (name, VAT, addresses)
+- Business units
+- Member count
+- Configuration settings
+
+## Example
+
+```bash
+curl https://back.flowieapp.com/organizations/org_abc123 \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+<ResponseExample>
+```json
+{
+  "data": {
+    "id": "org_abc123",
+    "name": "Acme Corporation",
+    "vatNumber": "FR12345678901",
+    "siret": "12345678901234",
+    "country": "FR",
+    "currency": "EUR",
+    "timezone": "Europe/Paris",
+    "addresses": [
+      {
+        "id": "addr_001",
+        "type": "billing",
+        "street": "123 Main Street",
+        "city": "Paris",
+        "postalCode": "75001",
+        "country": "FR"
+      }
+    ],
+    "businessUnits": [
+      {
+        "id": "bu_xyz",
+        "name": "Finance Department",
+        "code": "FIN",
+        "parentId": null
+      },
+      {
+        "id": "bu_abc",
+        "name": "Accounting",
+        "code": "ACC",
+        "parentId": "bu_xyz"
+      }
+    ],
+    "settings": {
+      "defaultApprovalWorkflow": "wf_123",
+      "poNumberPrefix": "PO-",
+      "invoiceNumberPrefix": "INV-"
+    },
+    "memberCount": 25,
+    "createdAt": "2024-01-01T00:00:00Z"
+  }
+}
+```
+</ResponseExample>
+
+## Related Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /organizations/{id}/members` | List organization members |
+| `GET /organizations/{id}/business-units` | List business units |
+| `GET /organizations/{id}/addresses` | List addresses |
+| `GET /organizations/{id}/contacts` | List contacts |

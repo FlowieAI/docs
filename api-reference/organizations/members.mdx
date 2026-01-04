@@ -1,0 +1,90 @@
+---
+title: "Organization Members"
+api: "GET /organizations/{id}/members"
+description: "Manage organization members and their roles"
+---
+
+## List Members
+
+Retrieve all members of an organization.
+
+### Query Parameters
+
+<ParamField query="role" type="string">
+  Filter by role: `owner`, `admin`, `member`, `viewer`
+</ParamField>
+
+<ParamField query="business_unit_id" type="string">
+  Filter by business unit
+</ParamField>
+
+### Example
+
+```bash
+curl https://back.flowieapp.com/organizations/org_abc123/members \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+<ResponseExample>
+```json
+{
+  "data": [
+    {
+      "id": "member_001",
+      "userId": "user_xyz",
+      "email": "john@acme.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "role": "admin",
+      "businessUnits": ["bu_xyz", "bu_abc"],
+      "joinedAt": "2024-01-15T10:00:00Z"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+## Add Member
+
+```
+POST /organizations/{id}/members
+```
+
+### Request Body
+
+<ParamField body="email" type="string" required>
+  Email address of the user to invite
+</ParamField>
+
+<ParamField body="role" type="string" required>
+  Role: `admin`, `member`, `viewer`
+</ParamField>
+
+<ParamField body="businessUnitIds" type="array">
+  Array of business unit IDs to assign
+</ParamField>
+
+### Example
+
+```bash
+curl -X POST https://back.flowieapp.com/organizations/org_abc123/members \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "jane@acme.com",
+    "role": "member",
+    "businessUnitIds": ["bu_xyz"]
+  }'
+```
+
+## Update Member Role
+
+```
+PUT /organizations/{id}/members/{memberId}
+```
+
+## Remove Member
+
+```
+DELETE /organizations/{id}/members/{memberId}
+```

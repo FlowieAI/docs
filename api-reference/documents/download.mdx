@@ -1,0 +1,50 @@
+---
+title: "Download Document"
+api: "GET /documents/{id}/versions/{versionId}/download"
+description: "Get a signed URL to download a document version"
+---
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  Document ID
+</ParamField>
+
+<ParamField path="versionId" type="string" required>
+  Version ID (use `latest` for current version)
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="expires_in" type="integer" default="3600">
+  URL expiration in seconds (max 86400)
+</ParamField>
+
+## Response
+
+Returns a signed URL for secure download.
+
+## Example
+
+```bash
+curl https://back.flowieapp.com/documents/doc_xyz789/versions/latest/download \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+<ResponseExample>
+```json
+{
+  "data": {
+    "downloadUrl": "https://storage.googleapis.com/flowie-documents/...",
+    "expiresAt": "2024-01-15T11:30:00Z",
+    "fileName": "Invoice_2024_001.pdf",
+    "mimeType": "application/pdf",
+    "size": 245760
+  }
+}
+```
+</ResponseExample>
+
+<Note>
+  The signed URL is valid for the specified duration. After expiration, request a new URL.
+</Note>

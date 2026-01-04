@@ -1,0 +1,209 @@
+---
+title: "Object Tags"
+api: "POST /organizations/{org_id}/objects/tags"
+description: "Associate tags with objects (invoices, POs, etc.)"
+---
+
+## Overview
+
+Object tags link tags to domain objects like invoices, purchase orders, and line items.
+
+## Get Object Tags
+
+```
+GET /organizations/{org_id}/objects/{object_id}
+```
+
+Get all tags for a specific object.
+
+### Query Parameters
+
+<ParamField query="object_type" type="string" required>
+  Object type: `invoice`, `invoice_line`, `purchase_order`, `po_line`, `supplier`, `contract`
+</ParamField>
+
+### Example
+
+```bash
+curl "https://back.flowieapp.com/organizations/org_abc123/objects/inv_001?object_type=invoice" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+<ResponseExample>
+```json
+{
+  "data": [
+    {
+      "objectId": "inv_001",
+      "objectType": "invoice",
+      "tagId": "tag_001",
+      "tagGroupId": "tg_001",
+      "tagName": "Operations",
+      "tagGroupName": "Cost Center",
+      "ratio": null,
+      "partialAmount": null,
+      "default": false,
+      "createdByEntityType": "user",
+      "createdByEntityId": "user_123",
+      "createdAt": "2024-01-15T10:00:00Z"
+    }
+  ]
+}
+```
+</ResponseExample>
+
+## Add Tag to Object
+
+```
+POST /organizations/{org_id}/objects/tags
+```
+
+### Request Body
+
+<ParamField body="objectId" type="string" required>
+  Object ID (invoice, PO, etc.)
+</ParamField>
+
+<ParamField body="objectType" type="string" required>
+  Object type
+</ParamField>
+
+<ParamField body="tagId" type="string" required>
+  Tag ID to assign
+</ParamField>
+
+<ParamField body="contextId" type="string">
+  Parent context (e.g., invoice ID for line items)
+</ParamField>
+
+<ParamField body="ratio" type="number">
+  Allocation ratio for RATIO tag groups (0-1)
+</ParamField>
+
+<ParamField body="partialAmount" type="number">
+  Fixed amount allocation
+</ParamField>
+
+### Example
+
+```bash
+curl -X POST https://back.flowieapp.com/organizations/org_abc123/objects/tags \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "objectId": "inv_001",
+    "objectType": "invoice",
+    "tagId": "tag_001"
+  }'
+```
+
+## Bulk Add Tags
+
+```
+POST /organizations/{org_id}/objects/tags/bulk
+```
+
+Add multiple tags efficiently:
+
+```json
+{
+  "objectTags": [
+    {
+      "objectId": "inv_001",
+      "objectType": "invoice",
+      "tagId": "tag_001"
+    },
+    {
+      "objectId": "inv_001",
+      "objectType": "invoice",
+      "tagId": "tag_002"
+    }
+  ]
+}
+```
+
+## Auto-Tag Recommendations
+
+```
+POST /organizations/{org_id}/objects/tags/auto
+```
+
+Get AI-powered tag recommendations based on:
+- **Keywords**: Match invoice description to tag keywords
+- **Supplier affinity**: Tags frequently used for this supplier
+- **Context hierarchy**: Tags from parent document
+- **Historical patterns**: Similar invoices' tags
+
+### Request Body
+
+```json
+{
+  "objectId": "inv_001",
+  "objectType": "invoice",
+  "context": {
+    "supplierId": "sup_xyz",
+    "description": "Office supplies for marketing department",
+    "amount": 500.00
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "recommendations": [
+    {
+      "tagId": "tag_marketing",
+      "tagName": "Marketing",
+      "tagGroupId": "tg_cost_center",
+      "confidence": 0.92,
+      "reason": "keyword_match"
+    },
+    {
+      "tagId": "tag_supplies",
+      "tagName": "Office Supplies",
+      "tagGroupId": "tg_category",
+      "confidence": 0.85,
+      "reason": "supplier_affinity"
+    }
+  ]
+}
+```
+
+## Duplicate Tags
+
+```
+POST /organizations/{org_id}/objects/tags/duplicate
+```
+
+Copy tags from one object to another:
+
+```json
+{
+  "sourceObjectId": "inv_001",
+  "sourceObjectType": "invoice",
+  "targetObjectId": "inv_002",
+  "targetObjectType": "invoice",
+  "tagGroupIds": ["tg_001", "tg_002"]
+}
+```
+
+## Remove Tag from Object
+
+```
+DELETE /organizations/{org_id}/objects/{object_id}/tags/{tag_id}
+```
+
+## Get Tags by Context
+
+```
+GET /organizations/{org_id}/contexts/{context_id}
+```
+
+Get all tags within a context (e.g., all line item tags for an invoice).
+
+### Export Options
+
+- `GET /contexts/{id}/csv` - Export as CSV
+- `GET /contexts/{id}/json` - Export as JSON

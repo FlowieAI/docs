@@ -1,0 +1,106 @@
+---
+title: "Folders"
+api: "GET /folders"
+description: "Manage document folders and hierarchy"
+---
+
+## Overview
+
+Folders provide hierarchical organization for documents with access control inheritance.
+
+## List Folders
+
+```bash
+curl "https://back.flowieapp.com/folders?organization_id=org_abc123" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+## Get Folder Tree
+
+Retrieve the complete folder hierarchy for an organization:
+
+```
+GET /folders/tree/organizations/{orgId}
+```
+
+<ResponseExample>
+```json
+{
+  "data": {
+    "id": "root",
+    "name": "Root",
+    "children": [
+      {
+        "id": "folder_001",
+        "name": "Invoices",
+        "children": [
+          {
+            "id": "folder_002",
+            "name": "2024",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "folder_003",
+        "name": "Contracts",
+        "children": []
+      }
+    ]
+  }
+}
+```
+</ResponseExample>
+
+## Create Folder
+
+```
+POST /folders
+```
+
+### Request Body
+
+<ParamField body="name" type="string" required>
+  Folder name
+</ParamField>
+
+<ParamField body="organizationId" type="string" required>
+  Organization ID
+</ParamField>
+
+<ParamField body="parentId" type="string">
+  Parent folder ID (optional, defaults to root)
+</ParamField>
+
+### Example
+
+```bash
+curl -X POST https://back.flowieapp.com/folders \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Q1 2024",
+    "organizationId": "org_abc123",
+    "parentId": "folder_001"
+  }'
+```
+
+## Get Folder Contents
+
+```
+GET /folders/{id}/contents
+```
+
+Returns documents and subfolders within a folder.
+
+## Move Document to Folder
+
+```
+PUT /documents/{id}/move
+```
+
+```json
+{
+  "folderId": "folder_002"
+}
+```
