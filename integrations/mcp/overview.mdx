@@ -1,0 +1,97 @@
+---
+title: "MCP Servers"
+description: "Model Context Protocol servers for AI tools"
+---
+
+## Overview
+
+Flowie provides MCP (Model Context Protocol) servers that enable AI tools like Claude, Cursor, and others to interact directly with your Flowie data.
+
+## What is MCP?
+
+MCP is an open protocol that allows AI assistants to access external data sources and tools in a standardized way. With Flowie's MCP servers, you can:
+
+- Query invoices and POs using natural language
+- Create and update records through AI assistants
+- Get real-time budget information
+- Manage tags and custom fields
+
+## Available MCP Servers
+
+### flowie-core
+Core Flowie operations:
+- Invoice management
+- Purchase order management
+- Budget queries
+
+### flowie-tags
+Tag management:
+- List and create tags
+- Apply tags to documents
+- Tag-based queries
+
+### flowie-custom-fields
+Custom field operations:
+- Read custom field values
+- Update custom fields
+- Query by custom fields
+
+## Installation
+
+### For Claude Desktop
+
+Add to your Claude Desktop config (`~/.config/claude/config.json`):
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "flowie": {
+        "command": "npx",
+        "args": ["@flowie/mcp-server"],
+        "env": {
+          "FLOWIE_API_TOKEN": "your-api-token"
+        }
+      }
+    }
+  }
+}
+```
+
+### For Cursor
+
+Add to `.cursor/mcp.json` in your project:
+
+```json
+{
+  "servers": {
+    "flowie": {
+      "command": "npx @flowie/mcp-server",
+      "env": {
+        "FLOWIE_API_TOKEN": "your-api-token"
+      }
+    }
+  }
+}
+```
+
+## MCP Endpoint
+
+Flowie's MCP endpoint is available at:
+
+```
+https://flowie.mintlify.app/mcp
+```
+
+## Example Prompts
+
+Once configured, you can use prompts like:
+
+- "Show me all pending invoices"
+- "Create a new purchase order for office supplies"
+- "What's the remaining budget for Marketing?"
+- "Tag invoice INV-2024-001 as urgent"
+
+## Security
+
+MCP servers use the same API authentication as the REST API. Your API token determines what operations are permitted.

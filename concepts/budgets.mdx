@@ -1,0 +1,58 @@
+---
+title: "Budgets"
+description: "Understanding budget management in Flowie"
+---
+
+## Overview
+
+Flowie provides real-time budget tracking with support for hierarchical budgets, commitments, and period-based allocations.
+
+## Budget Types
+
+| Type | Description |
+|------|-------------|
+| **Annual** | Full year budget with monthly breakdown |
+| **Quarterly** | Budget per quarter |
+| **Monthly** | Monthly budget allocation |
+| **Project** | Project-specific budget |
+
+## Budget Structure
+
+```json
+{
+  "id": "bud_123",
+  "name": "Marketing Q1 2024",
+  "type": "quarterly",
+  "period": {
+    "start": "2024-01-01",
+    "end": "2024-03-31"
+  },
+  "amount": {
+    "allocated": 50000.00,
+    "committed": 15000.00,
+    "spent": 10000.00,
+    "available": 25000.00,
+    "currency": "EUR"
+  },
+  "parent_id": "bud_100",
+  "children": ["bud_124", "bud_125"]
+}
+```
+
+## Budget Tracking
+
+### Committed
+Reserved funds from approved POs not yet invoiced.
+
+### Spent  
+Actual expenses from approved invoices.
+
+### Available
+`Available = Allocated - Committed - Spent`
+
+## Alerts
+
+Configure alerts for:
+- Approaching budget threshold (80%, 90%, 100%)
+- Overbudget spending
+- Unusual spending patterns

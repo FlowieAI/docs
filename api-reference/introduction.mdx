@@ -1,33 +1,139 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: "API Overview"
+description: "Introduction to the Flowie API"
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## Base URL
 
-## Welcome
+All API requests should be made to:
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+```
+https://back.flowieapp.com
+```
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+For staging/testing:
+
+```
+https://back-staging.flowieapp.com
+```
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All requests require Bearer token authentication:
+
+```bash
+curl https://back.flowieapp.com/invoices \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+See [Authentication](/authentication) for details on obtaining tokens.
+
+## Request Format
+
+### Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Authorization` | Yes | Bearer token |
+| `Content-Type` | Yes (POST/PUT) | `application/json` |
+| `Accept` | No | `application/json` |
+
+### Pagination
+
+List endpoints support pagination:
+
+```bash
+GET /invoices?page=1&per_page=20
+```
+
+Response includes pagination metadata:
 
 ```json
-"security": [
-  {
-    "bearerAuth": []
+{
+  "data": [...],
+  "pagination": {
+    "page": 1,
+    "per_page": 20,
+    "total": 150,
+    "total_pages": 8
   }
-]
+}
+```
+
+### Filtering
+
+Most list endpoints support filtering:
+
+```bash
+GET /invoices?status=pending_approval&supplier_id=sup_xyz
+```
+
+### Sorting
+
+Sort results using the `sort` parameter:
+
+```bash
+GET /invoices?sort=-created_at  # Descending
+GET /invoices?sort=amount       # Ascending
+```
+
+## Response Format
+
+### Success Response
+
+```json
+{
+  "data": {
+    "id": "inv_abc123",
+    "number": "INV-2024-001",
+    ...
+  }
+}
+```
+
+### Error Response
+
+```json
+{
+  "error": {
+    "code": "validation_error",
+    "message": "Invalid invoice number format",
+    "details": [
+      {
+        "field": "number",
+        "message": "Must match pattern INV-YYYY-NNN"
+      }
+    ]
+  }
+}
+```
+
+## HTTP Status Codes
+
+| Code | Description |
+|------|-------------|
+| 200 | Success |
+| 201 | Created |
+| 400 | Bad Request - Invalid parameters |
+| 401 | Unauthorized - Invalid or missing token |
+| 403 | Forbidden - Insufficient permissions |
+| 404 | Not Found |
+| 422 | Validation Error |
+| 429 | Rate Limited |
+| 500 | Server Error |
+
+## Rate Limits
+
+| Plan | Requests/minute | Requests/day |
+|------|-----------------|--------------|
+| Starter | 100 | 10,000 |
+| Professional | 500 | 50,000 |
+| Enterprise | Custom | Custom |
+
+Rate limit headers:
+
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 95
+X-RateLimit-Reset: 1609459200
 ```

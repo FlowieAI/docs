@@ -1,0 +1,46 @@
+---
+title: "Get Purchase Order"
+api: "GET /purchase-orders/{id}"
+description: "Retrieve a single purchase order"
+---
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  Purchase order ID
+</ParamField>
+
+## Example
+
+```bash
+curl https://back.flowieapp.com/purchase-orders/po_def456 \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+<ResponseExample>
+```json
+{
+  "data": {
+    "id": "po_def456",
+    "number": "PO-2024-001",
+    "supplier": {
+      "id": "sup_xyz",
+      "name": "Acme Corp"
+    },
+    "status": "approved",
+    "line_items": [
+      {
+        "description": "Office Supplies",
+        "quantity": 100,
+        "unit_price": 50.00,
+        "total": 5000.00,
+        "budget_id": "bud_123"
+      }
+    ],
+    "total_amount": 5000.00,
+    "currency": "EUR",
+    "created_at": "2024-01-10T09:00:00Z"
+  }
+}
+```
+</ResponseExample>

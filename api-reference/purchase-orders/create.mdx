@@ -1,0 +1,53 @@
+---
+title: "Create Purchase Order"
+api: "POST /purchase-orders"
+description: "Create a new purchase order"
+---
+
+## Request Body
+
+<ParamField body="supplier_id" type="string" required>
+  Supplier ID
+</ParamField>
+
+<ParamField body="line_items" type="array" required>
+  Array of line items with description, quantity, unit_price, and budget_id
+</ParamField>
+
+<ParamField body="currency" type="string" default="EUR">
+  Currency code
+</ParamField>
+
+## Example
+
+```bash
+curl -X POST https://back.flowieapp.com/purchase-orders \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "supplier_id": "sup_xyz",
+    "line_items": [
+      {
+        "description": "Office Supplies",
+        "quantity": 100,
+        "unit_price": 50.00,
+        "budget_id": "bud_123"
+      }
+    ],
+    "currency": "EUR"
+  }'
+```
+
+<ResponseExample>
+```json
+{
+  "data": {
+    "id": "po_new123",
+    "number": "PO-2024-002",
+    "status": "draft",
+    "total_amount": 5000.00,
+    "currency": "EUR"
+  }
+}
+```
+</ResponseExample>

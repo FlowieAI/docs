@@ -1,0 +1,66 @@
+---
+title: "Workflows"
+description: "Understanding approval workflows in Flowie"
+---
+
+## Overview
+
+Workflows define the approval process for documents in Flowie. They can be configured with multiple steps, conditions, and approvers.
+
+## Workflow Components
+
+### Steps
+Sequential approval stages with:
+- Approvers (users, roles, or groups)
+- Approval threshold (any one, all, or majority)
+- Auto-escalation rules
+
+### Conditions
+Rules that determine which workflow applies:
+- Amount thresholds
+- Document type
+- Supplier category
+- Cost center
+
+### Actions
+What happens at each step:
+- Approve / Reject
+- Request changes
+- Delegate to another user
+
+## Example Workflow
+
+```yaml
+name: "Invoice Approval"
+conditions:
+  - document_type: invoice
+triggers:
+  - amount > 0
+steps:
+  - name: "Manager Approval"
+    approvers:
+      type: role
+      value: "cost_center_manager"
+    threshold: any_one
+    conditions:
+      - amount < 5000
+  - name: "Director Approval"
+    approvers:
+      type: role  
+      value: "department_director"
+    threshold: any_one
+    conditions:
+      - amount >= 5000
+  - name: "Finance Review"
+    approvers:
+      type: group
+      value: "finance_team"
+    threshold: any_one
+```
+
+## Delegation
+
+Users can delegate their approval authority:
+- Temporary (vacation, leave)
+- Permanent (role change)
+- Conditional (specific suppliers or amounts)

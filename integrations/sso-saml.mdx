@@ -1,0 +1,66 @@
+---
+title: "SSO & SAML"
+description: "Configure Single Sign-On for your organization"
+---
+
+## Overview
+
+Flowie supports SAML 2.0 for enterprise Single Sign-On integration with your identity provider.
+
+## Supported Identity Providers
+
+- Azure Active Directory
+- Okta
+- OneLogin
+- Google Workspace
+- PingOne
+- Any SAML 2.0 compliant IdP
+
+## Configuration
+
+### Step 1: Get Flowie SAML Settings
+
+From **Settings > Security > SSO**, copy:
+
+| Setting | Value |
+|---------|-------|
+| Entity ID | `https://auth.flowieapp.com/saml/YOUR_ORG` |
+| ACS URL | `https://auth.flowieapp.com/saml/callback` |
+| SLO URL | `https://auth.flowieapp.com/saml/logout` |
+
+### Step 2: Configure Your IdP
+
+Add Flowie as a SAML application in your IdP with the settings above.
+
+### Step 3: Upload IdP Metadata
+
+Upload your IdP's metadata XML or enter manually:
+
+- IdP Entity ID
+- SSO URL
+- X.509 Certificate
+
+### Step 4: Configure Attribute Mapping
+
+Map IdP attributes to Flowie fields:
+
+| Flowie Field | Common IdP Attribute |
+|--------------|---------------------|
+| `email` | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` |
+| `firstName` | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname` |
+| `lastName` | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname` |
+
+## Just-In-Time Provisioning
+
+Enable JIT to automatically create user accounts on first login:
+
+1. Go to **Settings > Security > SSO**
+2. Enable "Just-In-Time Provisioning"
+3. Set default role for new users
+
+## Testing
+
+1. Open an incognito window
+2. Navigate to `https://app.flowieapp.com/sso/YOUR_ORG`
+3. You should be redirected to your IdP
+4. After authentication, you'll be logged into Flowie

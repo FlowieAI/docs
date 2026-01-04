@@ -1,0 +1,36 @@
+---
+title: "Create Tag"
+api: "POST /tags"
+description: "Create a new tag"
+---
+
+## Request Body
+
+<ParamField body="name" type="string" required>
+  Tag name
+</ParamField>
+
+<ParamField body="color" type="string">
+  Hex color code
+</ParamField>
+
+## Example
+
+```bash
+curl -X POST https://back.flowieapp.com/tags \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Priority", "color": "#FF6600"}'
+```
+
+<ResponseExample>
+```json
+{
+  "data": {
+    "id": "tag_new",
+    "name": "Priority",
+    "color": "#FF6600"
+  }
+}
+```
+</ResponseExample>

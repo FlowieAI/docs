@@ -1,0 +1,98 @@
+---
+title: "Get Invoice"
+api: "GET /invoices/{id}"
+description: "Retrieve a single invoice by ID"
+---
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  The invoice ID
+</ParamField>
+
+## Response
+
+<ResponseField name="id" type="string">
+  Unique invoice identifier
+</ResponseField>
+
+<ResponseField name="number" type="string">
+  Invoice number
+</ResponseField>
+
+<ResponseField name="supplier" type="object">
+  Supplier information
+</ResponseField>
+
+<ResponseField name="amount" type="number">
+  Total invoice amount
+</ResponseField>
+
+<ResponseField name="currency" type="string">
+  Currency code (ISO 4217)
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current invoice status
+</ResponseField>
+
+<ResponseField name="line_items" type="array">
+  Invoice line items
+</ResponseField>
+
+## Example
+
+<CodeGroup>
+```bash curl
+curl https://back.flowieapp.com/invoices/inv_abc123 \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://back.flowieapp.com/invoices/inv_abc123",
+    headers={"Authorization": "Bearer YOUR_TOKEN"}
+)
+invoice = response.json()["data"]
+```
+</CodeGroup>
+
+<ResponseExample>
+```json
+{
+  "data": {
+    "id": "inv_abc123",
+    "number": "INV-2024-001",
+    "supplier": {
+      "id": "sup_xyz",
+      "name": "Acme Corp",
+      "vat_number": "FR12345678901"
+    },
+    "amount": 1200.00,
+    "currency": "EUR",
+    "status": "pending_approval",
+    "invoice_date": "2024-01-15",
+    "due_date": "2024-02-15",
+    "line_items": [
+      {
+        "description": "Consulting Services",
+        "quantity": 10,
+        "unit_price": 100.00,
+        "amount": 1000.00
+      },
+      {
+        "description": "VAT 20%",
+        "amount": 200.00
+      }
+    ],
+    "matched_po": "po_def456",
+    "workflow": {
+      "current_step": "manager_approval",
+      "pending_approvers": ["user_123"]
+    }
+  }
+}
+```
+</ResponseExample>

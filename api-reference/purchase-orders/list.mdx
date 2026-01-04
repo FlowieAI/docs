@@ -1,0 +1,55 @@
+---
+title: "List Purchase Orders"
+api: "GET /purchase-orders"
+description: "Retrieve a list of purchase orders"
+---
+
+## Query Parameters
+
+<ParamField query="page" type="integer" default="1">
+  Page number
+</ParamField>
+
+<ParamField query="per_page" type="integer" default="20">
+  Items per page (max 100)
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filter by status: `draft`, `submitted`, `approved`, `sent`, `received`, `closed`
+</ParamField>
+
+<ParamField query="supplier_id" type="string">
+  Filter by supplier
+</ParamField>
+
+## Example
+
+```bash
+curl https://back.flowieapp.com/purchase-orders \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+<ResponseExample>
+```json
+{
+  "data": [
+    {
+      "id": "po_def456",
+      "number": "PO-2024-001",
+      "supplier": {
+        "id": "sup_xyz",
+        "name": "Acme Corp"
+      },
+      "total_amount": 5000.00,
+      "currency": "EUR",
+      "status": "approved"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "per_page": 20,
+    "total": 25
+  }
+}
+```
+</ResponseExample>

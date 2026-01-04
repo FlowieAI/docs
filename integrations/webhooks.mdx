@@ -1,0 +1,86 @@
+---
+title: "Webhooks"
+description: "Receive real-time event notifications from Flowie"
+---
+
+## Overview
+
+Webhooks allow your application to receive real-time notifications when events occur in Flowie.
+
+## Configuring Webhooks
+
+### 1. Create a Webhook Endpoint
+
+Your endpoint must:
+- Accept POST requests
+- Return 2xx status code
+- Respond within 30 seconds
+
+### 2. Register in Flowie
+
+```bash
+curl -X POST https://back.flowieapp.com/webhooks \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://your-app.com/webhook",
+    "events": ["invoice.created", "invoice.approved"],
+    "secret": "your-webhook-secret"
+  }'
+```
+
+## Available Events
+
+### Invoice Events
+| Event | Description |
+|-------|-------------|
+| `invoice.created` | New invoice received |
+| `invoice.updated` | Invoice data changed |
+| `invoice.approved` | Invoice approved |
+| `invoice.rejected` | Invoice rejected |
+| `invoice.paid` | Invoice marked as paid |
+
+### Purchase Order Events
+| Event | Description |
+|-------|-------------|
+| `po.created` | New PO created |
+| `po.approved` | PO approved |
+| `po.sent` | PO sent to supplier |
+
+### Workflow Events
+| Event | Description |
+|-------|-------------|
+| `approval.pending` | Approval requested |
+| `approval.completed` | Step completed |
+
+## Webhook Payload
+
+```json
+{
+  "id": "evt_abc123",
+  "type": "invoice.approved",
+  "created": "2024-01-15T10:30:00Z",
+  "data": {
+    "invoice_id": "inv_xyz",
+    "number": "INV-2024-001",
+    "amount": 1200.00
+  }
+}
+```
+
+## Verifying Webhooks
+
+Verify the signature to ensure authenticity:
+
+```python
+import hmac
+import hashlib
+
+def verify_webhook(payload, signature, secret):
+    expected = hmac.new(
+        secret.encode(),
+        payload.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(signature, expected)
+```

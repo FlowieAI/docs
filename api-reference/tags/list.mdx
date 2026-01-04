@@ -1,0 +1,31 @@
+---
+title: "List Tags"
+api: "GET /tags"
+description: "Retrieve all tags"
+---
+
+## Example
+
+```bash
+curl https://back.flowieapp.com/tags \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+<ResponseExample>
+```json
+{
+  "data": [
+    {
+      "id": "tag_abc",
+      "name": "Urgent",
+      "color": "#FF0000"
+    },
+    {
+      "id": "tag_def",
+      "name": "Recurring",
+      "color": "#00FF00"
+    }
+  ]
+}
+```
+</ResponseExample>

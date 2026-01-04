@@ -1,0 +1,125 @@
+---
+title: "Authentication"
+description: "How to authenticate with the Flowie API"
+---
+
+## Overview
+
+The Flowie API uses OAuth 2.0 Bearer tokens for authentication. All API requests must include a valid access token in the `Authorization` header.
+
+## Getting Your Credentials
+
+1. Log in to the [Flowie Dashboard](https://app.flowieapp.com)
+2. Navigate to **Settings** > **API & Integrations**
+3. Click **Create API Client**
+4. Copy your Client ID and Client Secret
+
+<Warning>
+  Keep your client secret secure. Never expose it in client-side code or public repositories.
+</Warning>
+
+## Obtaining an Access Token
+
+Use the OAuth 2.0 Client Credentials flow:
+
+```bash
+curl --request POST \
+  --url https://flowie.eu.auth0.com/oauth/token \
+  --header 'content-type: application/json' \
+  --data '{
+    "client_id": "YOUR_CLIENT_ID",
+    "client_secret": "YOUR_CLIENT_SECRET",
+    "audience": "https://auth.flowieapp.com",
+    "grant_type": "client_credentials"
+  }'
+```
+
+### Response
+
+```json
+{
+  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "Bearer",
+  "expires_in": 86400
+}
+```
+
+## Using the Access Token
+
+Include the token in all API requests:
+
+```bash
+curl https://back.flowieapp.com/invoices \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+## Token Expiration
+
+Access tokens expire after 24 hours (86400 seconds). Implement token refresh logic in your application:
+
+```python
+import requests
+from datetime import datetime, timedelta
+
+class FlowieAuth:
+    def __init__(self, client_id, client_secret):
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.token = None
+        self.expires_at = None
+    
+    def get_token(self):
+        if self.token and datetime.now() < self.expires_at:
+            return self.token
+        
+        response = requests.post(
+            "https://flowie.eu.auth0.com/oauth/token",
+            json={
+                "client_id": self.client_id,
+                "client_secret": self.client_secret,
+                "audience": "https://auth.flowieapp.com",
+                "grant_type": "client_credentials"
+            }
+        )
+        data = response.json()
+        self.token = data["access_token"]
+        self.expires_at = datetime.now() + timedelta(seconds=data["expires_in"] - 60)
+        return self.token
+```
+
+## Scopes and Permissions
+
+API access is controlled by scopes. Common scopes include:
+
+| Scope | Description |
+|-------|-------------|
+| `read:invoices` | View invoices |
+| `write:invoices` | Create/update invoices |
+| `read:purchase_orders` | View purchase orders |
+| `write:purchase_orders` | Create/update purchase orders |
+| `read:budgets` | View budgets |
+| `admin` | Full administrative access |
+
+## Error Responses
+
+### 401 Unauthorized
+
+```json
+{
+  "error": "unauthorized",
+  "message": "Invalid or expired access token"
+}
+```
+
+**Solution:** Refresh your access token.
+
+### 403 Forbidden
+
+```json
+{
+  "error": "forbidden",
+  "message": "Insufficient permissions for this resource"
+}
+```
+
+**Solution:** Request additional scopes or contact your administrator.

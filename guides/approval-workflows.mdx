@@ -1,0 +1,95 @@
+---
+title: "Approval Workflows"
+description: "Setting up and managing approval workflows"
+---
+
+## Overview
+
+Approval workflows ensure proper authorization for financial documents. This guide covers workflow configuration and best practices.
+
+## Creating a Workflow
+
+### Step 1: Define Conditions
+
+Specify when this workflow applies:
+
+```json
+{
+  "conditions": [
+    {"field": "document_type", "operator": "eq", "value": "invoice"},
+    {"field": "amount", "operator": "gt", "value": 1000}
+  ]
+}
+```
+
+### Step 2: Add Approval Steps
+
+Configure who needs to approve:
+
+```json
+{
+  "steps": [
+    {
+      "name": "Manager Approval",
+      "approvers": {
+        "type": "role",
+        "value": "cost_center_manager"
+      },
+      "threshold": "any_one"
+    },
+    {
+      "name": "Finance Review",
+      "approvers": {
+        "type": "group",
+        "value": "finance_team"
+      },
+      "threshold": "any_one"
+    }
+  ]
+}
+```
+
+### Step 3: Set Escalation Rules
+
+Configure automatic escalation:
+
+```json
+{
+  "escalation": {
+    "after_hours": 48,
+    "escalate_to": "department_head",
+    "notify": true
+  }
+}
+```
+
+## Approver Types
+
+| Type | Description |
+|------|-------------|
+| `user` | Specific user by ID |
+| `role` | Users with a specific role |
+| `group` | Members of a group |
+| `hierarchy` | User's manager/supervisor |
+
+## Threshold Options
+
+- `any_one` - Single approver sufficient
+- `all` - All approvers must approve
+- `majority` - More than 50% must approve
+
+## Delegation
+
+Users can delegate their approval authority:
+
+1. Go to **Settings > Delegation**
+2. Select delegate user
+3. Set date range
+4. Choose scope (all or specific)
+
+## Mobile Approvals
+
+Approve from anywhere with the Flowie mobile app:
+- Push notifications for pending approvals
+- One-tap approve/reject
+- View full document details

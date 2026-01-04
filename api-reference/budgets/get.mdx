@@ -1,0 +1,48 @@
+---
+title: "Get Budget"
+api: "GET /budgets/{id}"
+description: "Retrieve a single budget with details"
+---
+
+## Path Parameters
+
+<ParamField path="id" type="string" required>
+  Budget ID
+</ParamField>
+
+## Example
+
+```bash
+curl https://back.flowieapp.com/budgets/bud_123 \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+<ResponseExample>
+```json
+{
+  "data": {
+    "id": "bud_123",
+    "name": "Marketing Q1 2024",
+    "type": "quarterly",
+    "period": {
+      "start": "2024-01-01",
+      "end": "2024-03-31"
+    },
+    "amount": {
+      "allocated": 50000.00,
+      "committed": 15000.00,
+      "spent": 10000.00,
+      "available": 25000.00,
+      "currency": "EUR"
+    },
+    "children": [
+      {
+        "id": "bud_124",
+        "name": "Digital Advertising",
+        "allocated": 20000.00
+      }
+    ]
+  }
+}
+```
+</ResponseExample>

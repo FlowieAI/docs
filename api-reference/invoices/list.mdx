@@ -1,0 +1,88 @@
+---
+title: "List Invoices"
+api: "GET /invoices"
+description: "Retrieve a list of invoices"
+---
+
+## Query Parameters
+
+<ParamField query="page" type="integer" default="1">
+  Page number for pagination
+</ParamField>
+
+<ParamField query="per_page" type="integer" default="20">
+  Number of items per page (max 100)
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filter by status: `received`, `processing`, `pending_approval`, `approved`, `paid`, `rejected`
+</ParamField>
+
+<ParamField query="supplier_id" type="string">
+  Filter by supplier ID
+</ParamField>
+
+<ParamField query="from_date" type="string">
+  Filter invoices from this date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField query="to_date" type="string">
+  Filter invoices until this date (YYYY-MM-DD)
+</ParamField>
+
+## Response
+
+<ResponseField name="data" type="array">
+  Array of invoice objects
+</ResponseField>
+
+<ResponseField name="pagination" type="object">
+  Pagination metadata
+</ResponseField>
+
+## Example
+
+<CodeGroup>
+```bash curl
+curl https://back.flowieapp.com/invoices \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://back.flowieapp.com/invoices",
+    headers={"Authorization": "Bearer YOUR_TOKEN"},
+    params={"status": "pending_approval"}
+)
+invoices = response.json()["data"]
+```
+</CodeGroup>
+
+<ResponseExample>
+```json
+{
+  "data": [
+    {
+      "id": "inv_abc123",
+      "number": "INV-2024-001",
+      "supplier": {
+        "id": "sup_xyz",
+        "name": "Acme Corp"
+      },
+      "amount": 1200.00,
+      "currency": "EUR",
+      "status": "pending_approval",
+      "invoice_date": "2024-01-15",
+      "due_date": "2024-02-15"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "per_page": 20,
+    "total": 45
+  }
+}
+```
+</ResponseExample>

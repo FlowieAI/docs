@@ -1,97 +1,129 @@
 ---
 title: "Introduction"
-description: "Welcome to the new home for your documentation"
+description: "Welcome to the Flowie API documentation"
 ---
 
-## Setting up
+## Welcome to Flowie
 
-Get your documentation site up and running in minutes.
-
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
-
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
+Flowie is a comprehensive procure-to-pay (P2P) platform that streamlines your entire procurement process, from purchase requests to invoice payments.
 
 <Columns cols={2}>
   <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
+    title="Quick Start"
+    icon="rocket"
+    href="/quickstart"
   >
-    Edit your docs locally and preview them in real time.
+    Get up and running with the Flowie API in minutes
   </Card>
   <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
-  </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
+    title="API Reference"
+    icon="code"
     href="/api-reference/introduction"
   >
-    Auto-generate API documentation from OpenAPI specifications.
+    Explore our complete API documentation
+  </Card>
+  <Card
+    title="Integrations"
+    icon="plug"
+    href="/integrations/overview"
+  >
+    Connect Flowie with your existing tools
+  </Card>
+  <Card
+    title="Guides"
+    icon="book"
+    href="/guides/invoice-processing"
+  >
+    Learn how to implement common workflows
   </Card>
 </Columns>
 
-## Create beautiful pages
+## Key Features
 
-Everything you need to create world-class documentation.
+<AccordionGroup>
+  <Accordion title="Invoice Management" icon="file-invoice">
+    Automate invoice capture, OCR extraction, and approval workflows.
+    - Automatic data extraction with AI-powered OCR
+    - Multi-level approval workflows
+    - Duplicate detection
+    - Three-way matching with POs
+  </Accordion>
+
+  <Accordion title="Purchase Orders" icon="cart-shopping">
+    Create and manage purchase orders with full lifecycle tracking.
+    - Create POs from approved purchase requests
+    - Track order status and deliveries
+    - Budget allocation per line item
+    - Supplier management
+  </Accordion>
+
+  <Accordion title="Approval Workflows" icon="check-double">
+    Configure flexible approval workflows for any document type.
+    - Multi-step approvals
+    - Conditional routing based on amount, category, etc.
+    - Delegation and escalation
+    - Mobile approvals
+  </Accordion>
+
+  <Accordion title="Budget Management" icon="chart-pie">
+    Track spending against budgets in real-time.
+    - Hierarchical budgets
+    - Real-time commitment tracking
+    - Overbudget alerts
+    - Period-based budgets (monthly, quarterly, yearly)
+  </Accordion>
+</AccordionGroup>
+
+## Base URL
+
+All API requests should be made to:
+
+```
+https://back.flowieapp.com
+```
+
+For staging/testing:
+
+```
+https://back-staging.flowieapp.com
+```
+
+## Authentication
+
+The Flowie API uses OAuth 2.0 Bearer tokens for authentication. Include your token in the `Authorization` header:
+
+```bash
+curl https://back.flowieapp.com/invoices \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+<Card title="Get your API credentials" icon="key" href="/authentication">
+  Learn how to obtain and use API credentials
+</Card>
+
+## Rate Limits
+
+| Plan | Requests/minute | Requests/day |
+|------|-----------------|--------------|
+| Starter | 100 | 10,000 |
+| Professional | 500 | 50,000 |
+| Enterprise | Custom | Custom |
+
+## Need Help?
 
 <Columns cols={2}>
   <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
+    title="Contact Support"
+    icon="headset"
+    href="mailto:support@flowieapp.com"
   >
-    Use MDX to style your docs pages.
+    Get help from our support team
   </Card>
   <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
+    title="API Status"
+    icon="signal"
+    href="https://status.flowieapp.com"
   >
-    Add sample code to demonstrate how to use your product.
-  </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
+    Check current API status
   </Card>
 </Columns>
-
-## Need inspiration?
-
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
