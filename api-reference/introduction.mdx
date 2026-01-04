@@ -3,9 +3,15 @@ title: "API Overview"
 description: "Introduction to the Flowie API"
 ---
 
+## API Availability
+
+<Warning>
+  **API creation endpoints are coming soon.** Currently, the API supports read operations only. Creating invoices, purchase orders, and other documents is done through the Flowie web application or file imports.
+</Warning>
+
 ## Base URL
 
-All API requests should be made to:
+All API requests should be made to the main backend gateway:
 
 ```
 https://back.flowieapp.com
@@ -15,6 +21,32 @@ For staging/testing:
 
 ```
 https://back-staging.flowieapp.com
+```
+
+## Service Endpoints
+
+Each service has a specific path prefix:
+
+| Service | Path | Description |
+|---------|------|-------------|
+| **Organizations** | `/organizations` | Organization and business unit management |
+| **Documents** | `/doc` | Document upload, storage, and retrieval |
+| **Budget** | `/budget` | Budget creation and transaction tracking |
+| **Purchase** | `/purchase` | Purchase requests and orders |
+| **Invoices** | `/invoices` | Invoice management (v3) |
+| **Tags** | `/tag` | Tag groups and object tagging |
+
+### Example Requests
+
+```bash
+# List organizations
+GET https://back.flowieapp.com/organizations
+
+# Get budget details
+GET https://back.flowieapp.com/budget/organizations/{org_id}/budgets/{budget_id}
+
+# List documents
+GET https://back.flowieapp.com/doc/organizations/{org_id}/documents
 ```
 
 ## Authentication

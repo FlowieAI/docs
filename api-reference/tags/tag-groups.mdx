@@ -1,6 +1,6 @@
 ---
 title: "Tag Groups"
-api: "GET /organizations/{org_id}/tagGroups"
+api: "GET /tag/organizations/{org_id}/tagGroups"
 description: "Manage tag groups and their configuration"
 ---
 
@@ -9,7 +9,7 @@ description: "Manage tag groups and their configuration"
 Retrieve all tag groups for an organization.
 
 ```bash
-curl https://back.flowieapp.com/organizations/org_abc123/tagGroups \
+curl https://back.flowieapp.com/tag/organizations/org_abc123/tagGroups \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -47,8 +47,12 @@ curl https://back.flowieapp.com/organizations/org_abc123/tagGroups \
 
 ## Create Tag Group
 
+<Info>
+  **Coming Soon** - API tag group creation is not yet available. Tag groups are currently created through the Flowie web application.
+</Info>
+
 ```
-POST /organizations/{org_id}/tagGroups
+POST /tag/organizations/{org_id}/tagGroups
 ```
 
 ### Request Body
@@ -80,7 +84,7 @@ POST /organizations/{org_id}/tagGroups
 ### Example
 
 ```bash
-curl -X POST https://back.flowieapp.com/organizations/org_abc123/tagGroups \
+curl -X POST https://back.flowieapp.com/tag/organizations/org_abc123/tagGroups \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -95,7 +99,7 @@ curl -X POST https://back.flowieapp.com/organizations/org_abc123/tagGroups \
 ## Bulk Create Tag Groups
 
 ```
-POST /organizations/{org_id}/tagGroups/bulk
+POST /tag/organizations/{org_id}/tagGroups/bulk
 ```
 
 Create multiple tag groups in one request.
@@ -118,13 +122,13 @@ Create multiple tag groups in one request.
 ## Update Tag Group
 
 ```
-PUT /organizations/{org_id}/tagGroups/{id}
+PUT /tag/organizations/{org_id}/tagGroups/{id}
 ```
 
 ## Delete Tag Group
 
 ```
-DELETE /organizations/{org_id}/tagGroups/{id}
+DELETE /tag/organizations/{org_id}/tagGroups/{id}
 ```
 
 <Warning>
@@ -134,7 +138,7 @@ DELETE /organizations/{org_id}/tagGroups/{id}
 ## Update Translations
 
 ```
-PUT /organizations/{org_id}/tagGroups/{id}/translations
+PUT /tag/organizations/{org_id}/tagGroups/{id}/translations
 ```
 
 Update translations for multilingual support:

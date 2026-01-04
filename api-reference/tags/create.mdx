@@ -1,8 +1,12 @@
 ---
 title: "Create Tag"
-api: "POST /tags"
+api: "POST /tag/tags"
 description: "Create a new tag"
 ---
+
+<Info>
+  **Coming Soon** - API tag creation is not yet available. Tags are currently created through the Flowie web application.
+</Info>
 
 ## Request Body
 
@@ -17,7 +21,7 @@ description: "Create a new tag"
 ## Example
 
 ```bash
-curl -X POST https://back.flowieapp.com/tags \
+curl -X POST https://back.flowieapp.com/tag/tags \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"name": "Priority", "color": "#FF6600"}'

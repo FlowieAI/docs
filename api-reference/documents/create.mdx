@@ -1,8 +1,12 @@
 ---
 title: "Create Document"
-api: "POST /documents"
+api: "POST /doc/documents"
 description: "Upload a new document"
 ---
+
+<Info>
+  **Coming Soon** - API document creation is not yet available. Documents are currently uploaded through the Flowie web application or file imports.
+</Info>
 
 ## Overview
 
@@ -45,7 +49,7 @@ Upload a new document to Flowie. The document goes through:
 ## Example
 
 ```bash
-curl -X POST https://back.flowieapp.com/documents \
+curl -X POST https://back.flowieapp.com/doc/documents \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -F "name=Invoice_2024_002.pdf" \
   -F "organizationId=org_abc123" \

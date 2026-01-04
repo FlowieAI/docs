@@ -1,13 +1,25 @@
 ---
 title: "List Tags"
-api: "GET /tags"
-description: "Retrieve all tags"
+api: "GET /tag/organizations/{org_id}/tags"
+description: "Retrieve all tags for an organization"
 ---
+
+## Path Parameters
+
+<ParamField path="org_id" type="string" required>
+  Organization ID
+</ParamField>
+
+## Query Parameters
+
+<ParamField query="groupId" type="string">
+  Filter by tag group
+</ParamField>
 
 ## Example
 
 ```bash
-curl https://back.flowieapp.com/tags \
+curl https://back.flowieapp.com/tag/organizations/org_abc123/tags \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -18,12 +30,14 @@ curl https://back.flowieapp.com/tags \
     {
       "id": "tag_abc",
       "name": "Urgent",
-      "color": "#FF0000"
+      "color": "#FF0000",
+      "groupId": "group_001"
     },
     {
       "id": "tag_def",
       "name": "Recurring",
-      "color": "#00FF00"
+      "color": "#00FF00",
+      "groupId": "group_002"
     }
   ]
 }

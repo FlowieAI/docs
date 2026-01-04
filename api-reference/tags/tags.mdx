@@ -1,6 +1,6 @@
 ---
 title: "Tags"
-api: "GET /organizations/{org_id}/tags"
+api: "GET /tag/organizations/{org_id}/tags"
 description: "Create and manage individual tags"
 ---
 
@@ -9,14 +9,14 @@ description: "Create and manage individual tags"
 Get all tags for an organization (across all tag groups).
 
 ```bash
-curl https://back.flowieapp.com/organizations/org_abc123/tags \
+curl https://back.flowieapp.com/tag/organizations/org_abc123/tags \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
 ## Get Tags in a Group
 
 ```
-GET /organizations/{org_id}/tagGroups/{tagGroupId}/tags
+GET /tag/organizations/{org_id}/tagGroups/{tagGroupId}/tags
 ```
 
 <ResponseExample>
@@ -53,7 +53,7 @@ GET /organizations/{org_id}/tagGroups/{tagGroupId}/tags
 ## Search Tags
 
 ```
-GET /organizations/{org_id}/tags/search
+GET /tag/organizations/{org_id}/tags/search
 ```
 
 ### Query Parameters
@@ -73,14 +73,18 @@ GET /organizations/{org_id}/tags/search
 ### Example
 
 ```bash
-curl "https://back.flowieapp.com/organizations/org_abc123/tags/search?q=marketing" \
+curl "https://back.flowieapp.com/tag/organizations/org_abc123/tags/search?q=marketing" \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
 ## Create Tag
 
+<Info>
+  **Coming Soon** - API tag creation is not yet available. Tags are currently created through the Flowie web application.
+</Info>
+
 ```
-POST /organizations/{org_id}/tags
+POST /tag/organizations/{org_id}/tags
 ```
 
 ### Request Body
@@ -116,7 +120,7 @@ POST /organizations/{org_id}/tags
 ### Example
 
 ```bash
-curl -X POST https://back.flowieapp.com/organizations/org_abc123/tags \
+curl -X POST https://back.flowieapp.com/tag/organizations/org_abc123/tags \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -131,7 +135,7 @@ curl -X POST https://back.flowieapp.com/organizations/org_abc123/tags \
 ## Bulk Create Tags
 
 ```
-POST /organizations/{org_id}/tags/bulk
+POST /tag/organizations/{org_id}/tags/bulk
 ```
 
 Import multiple tags at once:
@@ -157,13 +161,13 @@ Import multiple tags at once:
 ## Update Tag
 
 ```
-PUT /organizations/{org_id}/tags/{tag_id}
+PUT /tag/organizations/{org_id}/tags/{tag_id}
 ```
 
 ## Delete Tag
 
 ```
-DELETE /organizations/{org_id}/tags/{tag_id}
+DELETE /tag/organizations/{org_id}/tags/{tag_id}
 ```
 
 <Note>

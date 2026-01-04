@@ -1,6 +1,6 @@
 ---
 title: "Object Tags"
-api: "POST /organizations/{org_id}/objects/tags"
+api: "POST /tag/organizations/{org_id}/objects/tags"
 description: "Associate tags with objects (invoices, POs, etc.)"
 ---
 
@@ -11,7 +11,7 @@ Object tags link tags to domain objects like invoices, purchase orders, and line
 ## Get Object Tags
 
 ```
-GET /organizations/{org_id}/objects/{object_id}
+GET /tag/organizations/{org_id}/objects/{object_id}
 ```
 
 Get all tags for a specific object.
@@ -25,7 +25,7 @@ Get all tags for a specific object.
 ### Example
 
 ```bash
-curl "https://back.flowieapp.com/organizations/org_abc123/objects/inv_001?object_type=invoice" \
+curl "https://back.flowieapp.com/tag/organizations/org_abc123/objects/inv_001?object_type=invoice" \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -54,8 +54,12 @@ curl "https://back.flowieapp.com/organizations/org_abc123/objects/inv_001?object
 
 ## Add Tag to Object
 
+<Info>
+  **Coming Soon** - API object tagging is not yet available. Tags are currently assigned through the Flowie web application.
+</Info>
+
 ```
-POST /organizations/{org_id}/objects/tags
+POST /tag/organizations/{org_id}/objects/tags
 ```
 
 ### Request Body
@@ -87,7 +91,7 @@ POST /organizations/{org_id}/objects/tags
 ### Example
 
 ```bash
-curl -X POST https://back.flowieapp.com/organizations/org_abc123/objects/tags \
+curl -X POST https://back.flowieapp.com/tag/organizations/org_abc123/objects/tags \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -100,7 +104,7 @@ curl -X POST https://back.flowieapp.com/organizations/org_abc123/objects/tags \
 ## Bulk Add Tags
 
 ```
-POST /organizations/{org_id}/objects/tags/bulk
+POST /tag/organizations/{org_id}/objects/tags/bulk
 ```
 
 Add multiple tags efficiently:
@@ -125,7 +129,7 @@ Add multiple tags efficiently:
 ## Auto-Tag Recommendations
 
 ```
-POST /organizations/{org_id}/objects/tags/auto
+POST /tag/organizations/{org_id}/objects/tags/auto
 ```
 
 Get AI-powered tag recommendations based on:
@@ -174,7 +178,7 @@ Get AI-powered tag recommendations based on:
 ## Duplicate Tags
 
 ```
-POST /organizations/{org_id}/objects/tags/duplicate
+POST /tag/organizations/{org_id}/objects/tags/duplicate
 ```
 
 Copy tags from one object to another:
@@ -192,18 +196,18 @@ Copy tags from one object to another:
 ## Remove Tag from Object
 
 ```
-DELETE /organizations/{org_id}/objects/{object_id}/tags/{tag_id}
+DELETE /tag/organizations/{org_id}/objects/{object_id}/tags/{tag_id}
 ```
 
 ## Get Tags by Context
 
 ```
-GET /organizations/{org_id}/contexts/{context_id}
+GET /tag/organizations/{org_id}/contexts/{context_id}
 ```
 
 Get all tags within a context (e.g., all line item tags for an invoice).
 
 ### Export Options
 
-- `GET /contexts/{id}/csv` - Export as CSV
-- `GET /contexts/{id}/json` - Export as JSON
+- `GET /tag/organizations/{org_id}/contexts/{id}/csv` - Export as CSV
+- `GET /tag/organizations/{org_id}/contexts/{id}/json` - Export as JSON

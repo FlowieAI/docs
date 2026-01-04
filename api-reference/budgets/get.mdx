@@ -1,19 +1,23 @@
 ---
 title: "Get Budget"
-api: "GET /budgets/{id}"
+api: "GET /budget/organizations/{org_id}/budgets/{budget_id}"
 description: "Retrieve a single budget with details"
 ---
 
 ## Path Parameters
 
-<ParamField path="id" type="string" required>
+<ParamField path="org_id" type="string" required>
+  Organization ID
+</ParamField>
+
+<ParamField path="budget_id" type="string" required>
   Budget ID
 </ParamField>
 
 ## Example
 
 ```bash
-curl https://back.flowieapp.com/budgets/bud_123 \
+curl https://back.flowieapp.com/budget/organizations/org_abc123/budgets/bud_123 \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -23,25 +27,25 @@ curl https://back.flowieapp.com/budgets/bud_123 \
   "data": {
     "id": "bud_123",
     "name": "Marketing Q1 2024",
-    "type": "quarterly",
-    "period": {
-      "start": "2024-01-01",
-      "end": "2024-03-31"
+    "initialAmount": 50000,
+    "currentAmount": 50000,
+    "freeAmount": 25000,
+    "currency": "EUR",
+    "organizationId": "org_abc123",
+    "businessUnitId": "bu_marketing",
+    "recurrence": "QUARTERLY",
+    "startDate": "2024-01-01",
+    "endDate": "2024-03-31",
+    "closed": false,
+    "allowOverbudget": false,
+    "metrics": {
+      "asked": 5000,
+      "planned": 10000,
+      "engaged": 8000,
+      "scheduled": 2000,
+      "paid": 0
     },
-    "amount": {
-      "allocated": 50000.00,
-      "committed": 15000.00,
-      "spent": 10000.00,
-      "available": 25000.00,
-      "currency": "EUR"
-    },
-    "children": [
-      {
-        "id": "bud_124",
-        "name": "Digital Advertising",
-        "allocated": 20000.00
-      }
-    ]
+    "createdAt": "2024-01-01T10:00:00Z"
   }
 }
 ```

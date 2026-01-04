@@ -1,12 +1,16 @@
 ---
 title: "Get Document"
-api: "GET /documents/{id}"
+api: "GET /doc/organizations/{org_id}/documents/{doc_id}"
 description: "Retrieve a document with all versions and metadata"
 ---
 
 ## Path Parameters
 
-<ParamField path="id" type="string" required>
+<ParamField path="org_id" type="string" required>
+  Organization ID
+</ParamField>
+
+<ParamField path="doc_id" type="string" required>
   Document ID
 </ParamField>
 
@@ -22,7 +26,7 @@ Returns the document with:
 ## Example
 
 ```bash
-curl https://back.flowieapp.com/documents/doc_xyz789 \
+curl https://back.flowieapp.com/doc/organizations/org_abc123/documents/doc_xyz789 \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 

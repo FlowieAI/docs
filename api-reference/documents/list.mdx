@@ -1,6 +1,6 @@
 ---
 title: "List Documents"
-api: "GET /documents"
+api: "GET /doc/organizations/{org_id}/documents"
 description: "Retrieve documents with filtering and pagination"
 ---
 
@@ -8,11 +8,13 @@ description: "Retrieve documents with filtering and pagination"
 
 The Document API manages file storage, versioning, and access control. Documents can be linked to any domain object (invoices, purchase orders, contracts, etc.).
 
-## Query Parameters
+## Path Parameters
 
-<ParamField query="organization_id" type="string" required>
+<ParamField path="org_id" type="string" required>
   Organization ID
 </ParamField>
+
+## Query Parameters
 
 <ParamField query="folder_id" type="string">
   Filter by folder
@@ -47,7 +49,7 @@ The Document API manages file storage, versioning, and access control. Documents
 ## Example
 
 ```bash
-curl "https://back.flowieapp.com/documents?organization_id=org_abc123" \
+curl "https://back.flowieapp.com/doc/organizations/org_abc123/documents" \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
