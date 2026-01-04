@@ -1,113 +1,144 @@
 ---
-title: "Introduction"
-description: "Welcome to the Flowie API documentation"
+title: "Flowie E-Invoicing"
+description: "Upload any invoice format - PDF, images, UBL, Factur-X - and get structured data automatically"
 ---
 
-## Welcome to Flowie
+## E-Invoicing Made Simple
 
-Flowie is a comprehensive procure-to-pay (P2P) platform that streamlines your entire procurement process, from purchase requests to invoice payments.
+Upload invoices in **any format** and let Flowie's AI extract structured data automatically. No manual data entry required.
 
 <Columns cols={2}>
   <Card
-    title="Quick Start"
-    icon="rocket"
-    href="/quickstart"
+    title="Upload Any Format"
+    icon="file-invoice"
+    href="/api-reference/introduction"
   >
-    Get up and running with the Flowie API in minutes
+    PDF, images, UBL, Factur-X, ZUGFeRD - we handle it all
   </Card>
   <Card
     title="API Reference"
     icon="code"
     href="/api-reference/introduction"
   >
-    Explore our complete API documentation
+    Integrate e-invoicing into your systems
   </Card>
   <Card
-    title="Integrations"
-    icon="plug"
-    href="/integrations/overview"
+    title="Supported Formats"
+    icon="file-lines"
+    href="/concepts/invoices"
   >
-    Connect Flowie with your existing tools
+    See all supported invoice formats
   </Card>
   <Card
-    title="Guides"
-    icon="book"
-    href="/guides/invoice-processing"
+    title="Webhooks"
+    icon="webhook"
+    href="/integrations/webhooks"
   >
-    Learn how to implement common workflows
+    Get notified when invoices are processed
   </Card>
 </Columns>
+
+## Supported Invoice Formats
+
+| Format | Type | Description |
+|--------|------|-------------|
+| **PDF** | Document | Scanned or digital invoices |
+| **Images** | PNG, JPG, TIFF | Photos or scans |
+| **UBL** | XML | Universal Business Language |
+| **Factur-X** | Hybrid PDF | French e-invoicing standard |
+| **ZUGFeRD** | Hybrid PDF | German e-invoicing standard |
+| **CII** | XML | Cross Industry Invoice |
+
+## How It Works
+
+```mermaid
+graph LR
+    A[Upload File] --> B[AI Processing]
+    B --> C[Data Extraction]
+    C --> D[Validation]
+    D --> E[Ready to Use]
+```
+
+<Steps>
+  <Step title="Upload">
+    Send any invoice file via API or web upload
+  </Step>
+  <Step title="Process">
+    AI-powered OCR extracts text and identifies fields
+  </Step>
+  <Step title="Extract">
+    Structured data: vendor, amounts, dates, line items
+  </Step>
+  <Step title="Use">
+    Access via API or approve in workflows
+  </Step>
+</Steps>
+
+## Quick Example
+
+```bash
+# Upload an invoice
+curl -X POST https://back.flowieapp.com/doc/organizations/{org_id}/documents \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "file=@invoice.pdf"
+
+# Response: document processing started
+{
+  "data": {
+    "id": "doc_xyz789",
+    "status": "processing"
+  }
+}
+```
 
 ## Key Features
 
 <AccordionGroup>
-  <Accordion title="Invoice Management" icon="file-invoice">
-    Automate invoice capture, OCR extraction, and approval workflows.
-    - Automatic data extraction with AI-powered OCR
-    - Multi-level approval workflows
-    - Duplicate detection
-    - Three-way matching with POs
+  <Accordion title="Multi-Format Support" icon="files">
+    Accept invoices in any format your suppliers send - PDF, images, electronic formats (UBL, Factur-X, ZUGFeRD), or even Excel files.
   </Accordion>
 
-  <Accordion title="Purchase Orders" icon="cart-shopping">
-    Create and manage purchase orders with full lifecycle tracking.
-    - Create POs from approved purchase requests
-    - Track order status and deliveries
-    - Budget allocation per line item
-    - Supplier management
+  <Accordion title="AI-Powered Extraction" icon="brain">
+    Advanced OCR and machine learning extract:
+    - Vendor information
+    - Invoice number and dates
+    - Amounts and currency
+    - Line items with descriptions
+    - Tax breakdowns
   </Accordion>
 
-  <Accordion title="Approval Workflows" icon="check-double">
-    Configure flexible approval workflows for any document type.
-    - Multi-step approvals
-    - Conditional routing based on amount, category, etc.
-    - Delegation and escalation
-    - Mobile approvals
+  <Accordion title="Automatic Matching" icon="link">
+    Invoices are automatically matched to:
+    - Existing suppliers in your database
+    - Purchase orders for 3-way matching
+    - Contracts and agreements
   </Accordion>
 
-  <Accordion title="Budget Management" icon="chart-pie">
-    Track spending against budgets in real-time.
-    - Hierarchical budgets
-    - Real-time commitment tracking
-    - Overbudget alerts
-    - Period-based budgets (monthly, quarterly, yearly)
+  <Accordion title="Compliance Ready" icon="shield-check">
+    Built-in support for e-invoicing regulations:
+    - French Factur-X mandate
+    - German XRechnung/ZUGFeRD
+    - Peppol network
+    - Italian SDI
   </Accordion>
 </AccordionGroup>
 
 ## Base URL
 
-All API requests should be made to:
-
 ```
 https://back.flowieapp.com
 ```
 
-For staging/testing:
-
-```
-https://back-staging.flowieapp.com
-```
-
 ## Authentication
-
-The Flowie API uses OAuth 2.0 Bearer tokens for authentication. Include your token in the `Authorization` header:
 
 ```bash
 curl https://back.flowieapp.com/invoices \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
-<Card title="Get your API credentials" icon="key" href="/authentication">
-  Learn how to obtain and use API credentials
+<Card title="Get API credentials" icon="key" href="/authentication">
+  Set up OAuth 2.0 authentication
 </Card>
-
-## Rate Limits
-
-| Plan | Requests/minute | Requests/day |
-|------|-----------------|--------------|
-| Starter | 100 | 10,000 |
-| Professional | 500 | 50,000 |
-| Enterprise | Custom | Custom |
 
 ## Need Help?
 
@@ -117,13 +148,13 @@ curl https://back.flowieapp.com/invoices \
     icon="headset"
     href="mailto:support@flowieapp.com"
   >
-    Get help from our support team
+    Get help from our team
   </Card>
   <Card
     title="API Status"
     icon="signal"
     href="https://status.flowieapp.com"
   >
-    Check current API status
+    Check service status
   </Card>
 </Columns>

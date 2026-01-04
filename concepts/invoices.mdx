@@ -1,11 +1,112 @@
 ---
-title: "Invoices"
-description: "Understanding invoice management in Flowie"
+title: "Invoice Formats"
+description: "Supported e-invoicing formats and automatic processing"
 ---
 
 ## Overview
 
-Invoices are the core document type in Flowie's procure-to-pay workflow. The platform supports full invoice lifecycle management from receipt to payment.
+Flowie accepts invoices in **any format** and automatically extracts structured data. Upload PDF, images, or electronic invoice formats - our AI handles the rest.
+
+## Supported Formats
+
+### Document Formats
+
+| Format | Extensions | Processing |
+|--------|------------|------------|
+| **PDF** | `.pdf` | OCR + AI extraction |
+| **Images** | `.png`, `.jpg`, `.jpeg`, `.tiff` | OCR + AI extraction |
+| **Office** | `.docx`, `.xlsx` | Text extraction |
+
+### E-Invoicing Standards
+
+| Standard | Format | Region | Description |
+|----------|--------|--------|-------------|
+| **Factur-X** | Hybrid PDF/XML | France | French e-invoicing mandate (PDF/A-3 + XML) |
+| **ZUGFeRD** | Hybrid PDF/XML | Germany | German standard, compatible with Factur-X |
+| **UBL** | XML | EU/Global | Universal Business Language |
+| **CII** | XML | EU | Cross Industry Invoice (EN 16931) |
+| **XRechnung** | XML | Germany | German public sector standard |
+| **FatturaPA** | XML | Italy | Italian SDI format |
+| **Peppol BIS** | XML | EU | Pan-European e-invoicing network |
+
+### Hybrid PDF Formats
+
+Factur-X and ZUGFeRD invoices contain both:
+- **Visual PDF** - Human-readable invoice
+- **Embedded XML** - Machine-readable structured data
+
+```
+┌─────────────────────────────┐
+│     Factur-X Invoice        │
+├─────────────────────────────┤
+│  ┌─────────────────────┐    │
+│  │   PDF/A-3 Visual    │    │
+│  │   (Human readable)  │    │
+│  └─────────────────────┘    │
+│  ┌─────────────────────┐    │
+│  │   XML Attachment    │    │
+│  │   (Machine data)    │    │
+│  └─────────────────────┘    │
+└─────────────────────────────┘
+```
+
+## Processing Pipeline
+
+```mermaid
+graph TD
+    A[Upload File] --> B{File Type?}
+    B -->|PDF/Image| C[OCR Engine]
+    B -->|XML| D[Parse Schema]
+    B -->|Hybrid| E[Extract XML + Fallback OCR]
+    C --> F[AI Data Extraction]
+    D --> F
+    E --> F
+    F --> G[Validation]
+    G --> H[Supplier Matching]
+    H --> I[PO Matching]
+    I --> J[Ready for Approval]
+```
+
+### 1. File Upload
+
+```bash
+curl -X POST https://back.flowieapp.com/doc/organizations/{org_id}/documents \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -F "file=@invoice.pdf"
+```
+
+### 2. Automatic Detection
+
+Flowie automatically detects the invoice format:
+- **Hybrid PDF**: Extracts embedded XML first
+- **Scanned PDF**: Runs OCR processing
+- **Digital PDF**: Extracts text directly
+- **XML**: Parses according to schema (UBL, CII, etc.)
+
+### 3. Data Extraction
+
+AI extracts these fields automatically:
+
+| Field | Description |
+|-------|-------------|
+| `vendor` | Supplier name, VAT number, address |
+| `invoiceNumber` | Invoice reference number |
+| `invoiceDate` | Issue date |
+| `dueDate` | Payment due date |
+| `totalAmount` | Gross amount |
+| `taxAmount` | VAT/tax amount |
+| `currency` | ISO currency code |
+| `lineItems` | Individual line items with quantities |
+| `paymentTerms` | Payment conditions |
+| `bankDetails` | IBAN, BIC for payment |
+
+### 4. Validation
+
+Automatic validation checks:
+- VAT number verification
+- Amount calculations
+- Duplicate detection
+- Schema compliance (for e-invoices)
 
 ## Invoice Lifecycle
 
@@ -19,28 +120,27 @@ graph LR
     C --> G[Rejected]
 ```
 
-## Invoice Statuses
-
 | Status | Description |
 |--------|-------------|
-| `received` | Invoice uploaded, awaiting OCR processing |
-| `processing` | AI is extracting data from the invoice |
+| `received` | File uploaded, queued for processing |
+| `processing` | OCR/extraction in progress |
 | `pending_approval` | Waiting for approval workflow |
 | `approved` | All approvals completed |
 | `ready_to_pay` | Approved and ready for payment |
 | `paid` | Payment completed |
 | `rejected` | Rejected during approval |
 
-## Invoice Structure
+## Extracted Invoice Structure
 
 ```json
 {
   "id": "inv_abc123",
   "number": "INV-2024-001",
+  "format": "factur-x",
   "supplier": {
     "id": "sup_xyz",
     "name": "Acme Corp",
-    "vat_number": "FR12345678901"
+    "vatNumber": "FR12345678901"
   },
   "amount": {
     "net": 1000.00,
@@ -49,45 +149,41 @@ graph LR
     "currency": "EUR"
   },
   "dates": {
-    "invoice_date": "2024-01-15",
-    "due_date": "2024-02-15",
-    "received_date": "2024-01-16"
+    "invoiceDate": "2024-01-15",
+    "dueDate": "2024-02-15"
   },
-  "line_items": [...],
-  "workflow_status": "pending_approval",
-  "matched_po": "po_def456"
+  "lineItems": [
+    {
+      "description": "Software License",
+      "quantity": 5,
+      "unitPrice": 200.00,
+      "amount": 1000.00,
+      "taxRate": 20
+    }
+  ],
+  "extractionConfidence": 0.95,
+  "matchedPO": "po_def456"
 }
 ```
 
-## Key Features
+## Compliance
 
-### AI-Powered OCR
-Automatic extraction of invoice data using machine learning:
-- Supplier identification
-- Line item parsing
-- Amount calculation
-- Date extraction
+Flowie supports regulatory requirements:
 
-### Three-Way Matching
-Automatic matching between:
-1. **Purchase Order** - What was ordered
-2. **Receipt** - What was received
-3. **Invoice** - What is being billed
-
-### Approval Workflows
-Configurable approval rules based on:
-- Invoice amount thresholds
-- Supplier category
-- Cost center
-- Department
+| Region | Mandate | Status |
+|--------|---------|--------|
+| France | Factur-X B2B mandate | Supported |
+| Germany | XRechnung for B2G | Supported |
+| Italy | SDI electronic invoicing | Supported |
+| EU | Peppol network | Supported |
 
 ## Related
 
 <Columns cols={2}>
-  <Card title="Invoice Processing Guide" icon="book" href="/guides/invoice-processing">
-    Step-by-step invoice workflow guide
+  <Card title="Upload Documents" icon="upload" href="/api-reference/documents/create">
+    API for uploading invoice files
   </Card>
   <Card title="Invoice API" icon="code" href="/api-reference/invoices/list">
-    Invoice API reference
+    Access processed invoice data
   </Card>
 </Columns>
