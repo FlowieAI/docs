@@ -1,46 +1,68 @@
 ---
 title: "E-Invoicing API Overview"
-description: "Upload any invoice format and let Flowie process it automatically"
+description: "AI-powered document processing for any invoice format"
 ---
 
 ## What is Flowie E-Invoicing?
 
-Flowie is an **e-invoicing platform** that accepts invoices in any format and automatically processes them using AI-powered OCR and data extraction.
+Flowie is an **AI-powered e-invoicing platform** that processes documents using a multi-model ensemble of GPT-4 Vision, Gemini Pro Vision, and Claude Vision. Upload any invoice format and receive structured, validated data.
 
-<Card title="Upload Any Format" icon="file-invoice">
-  Push PDF, images, UBL, Factur-X, ZUGFeRD, or any document format. Flowie extracts structured data automatically.
-</Card>
+<CardGroup cols={2}>
+  <Card title="Any Format" icon="files">
+    PDF, images, UBL, PEPPOL, Factur-X, SAP IDOC
+  </Card>
+  <Card title="AI Ensemble" icon="brain">
+    GPT-4 + Gemini + Claude for maximum accuracy
+  </Card>
+  <Card title="Auto-Matching" icon="link">
+    Suppliers, POs, and cost centers
+  </Card>
+  <Card title="Structured Output" icon="database">
+    Clean JSON with confidence scores
+  </Card>
+</CardGroup>
 
-## Supported Invoice Formats
+## Supported Formats
 
-| Format | Extensions | Description |
-|--------|------------|-------------|
-| **PDF** | `.pdf` | Scanned or digital PDFs |
-| **Images** | `.png`, `.jpg`, `.jpeg`, `.tiff` | Photos or scans of invoices |
-| **UBL** | `.xml` | Universal Business Language |
-| **Factur-X** | `.pdf` (hybrid) | French e-invoicing standard |
-| **ZUGFeRD** | `.pdf` (hybrid) | German e-invoicing standard |
-| **Office** | `.docx`, `.xlsx` | Microsoft Office documents |
+### Unstructured (AI Extraction)
 
-## How It Works
+| Format | Extensions |
+|--------|------------|
+| PDF | `.pdf` |
+| Images | `.png`, `.jpg`, `.jpeg`, `.tiff` |
+| Office | `.docx`, `.xlsx` |
 
-```mermaid
-graph LR
-    A[Upload File] --> B[OCR Processing]
-    B --> C[Data Extraction]
-    C --> D[Validation]
-    D --> E[Structured Invoice]
+### Structured (Direct Parsing)
+
+| Standard | Description |
+|----------|-------------|
+| **PEPPOL BIS 3.0** | EU e-invoicing network |
+| **UBL 2.0/2.4** | Universal Business Language |
+| **Factur-X** | French standard (PDF + XML) |
+| **SAP IDOC** | INVOIC_02 format |
+
+## Processing Pipeline
+
+```
+Upload → Format Detection → OCR/Parse → AI Extraction → Validation → Ready
 ```
 
-1. **Upload** - Send any invoice file to the Documents API
-2. **Process** - Flowie runs OCR and AI extraction
-3. **Extract** - Structured data is extracted (vendor, amounts, line items)
-4. **Validate** - Data is validated and matched against your suppliers
-5. **Ready** - Invoice is ready for approval workflows
+<Steps>
+  <Step title="Upload">
+    Send document to `/doc/organizations/{org_id}/documents`
+  </Step>
+  <Step title="Detection">
+    System identifies format (PDF, XML, hybrid)
+  </Step>
+  <Step title="Extraction">
+    AI ensemble extracts: vendor, amounts, line items, dates
+  </Step>
+  <Step title="Validation">
+    VAT verification, duplicate check, PO matching
+  </Step>
+</Steps>
 
 ## Base URL
-
-All API requests use the main gateway:
 
 ```
 https://back.flowieapp.com
@@ -48,99 +70,135 @@ https://back.flowieapp.com
 
 ## Service Endpoints
 
-| Service | Endpoint | Description |
-|---------|----------|-------------|
-| **Documents** | `/doc` | Upload and manage invoice files |
-| **Invoices** | `/invoices` | Access processed invoice data |
-| **Organizations** | `/organizations` | Organization and business units |
-| **Budget** | `/budget` | Budget tracking and allocation |
-| **Purchase** | `/purchase` | Purchase orders for matching |
-| **Tags** | `/tag` | Categorization and coding |
+| Service | Path | Description |
+|---------|------|-------------|
+| **Documents** | `/doc` | Upload and manage files |
+| **Invoices** | `/invoices` | Processed invoice data |
+| **Organizations** | `/organizations` | Organization management |
+| **Budget** | `/budget` | Budget tracking |
+| **Purchase** | `/purchase` | Purchase orders |
+| **Tags** | `/tag` | Categorization |
 
-## Quick Start: Upload an Invoice
+## Quick Start
+
+### 1. Upload a Document
 
 ```bash
-# Upload an invoice file
 curl -X POST https://back.flowieapp.com/doc/organizations/{org_id}/documents \
   -H "Authorization: Bearer YOUR_TOKEN" \
-  -F "file=@invoice.pdf" \
-  -F "name=Invoice_2024_001.pdf"
+  -F "file=@invoice.pdf"
 ```
 
-The document will be automatically processed:
-- **OCR** extracts text from images/scans
-- **AI** identifies invoice fields (vendor, date, amount, lines)
-- **Matching** links to existing suppliers and POs
-
-## Check Processing Status
-
-```bash
-# Get document with OCR status
-curl https://back.flowieapp.com/doc/organizations/{org_id}/documents/{doc_id} \
-  -H "Authorization: Bearer YOUR_TOKEN"
-```
-
+**Response:**
 ```json
 {
   "data": {
     "id": "doc_xyz789",
-    "name": "Invoice_2024_001.pdf",
-    "status": "active",
-    "ocrStatus": "completed",
+    "status": "processing"
+  }
+}
+```
+
+### 2. Check Processing Status
+
+```bash
+curl https://back.flowieapp.com/doc/organizations/{org_id}/documents/{doc_id} \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+**Response:**
+```json
+{
+  "data": {
+    "id": "doc_xyz789",
+    "status": "completed",
+    "extractionConfidence": 0.94,
     "extractedData": {
-      "vendorName": "Acme Corp",
+      "documentType": "INVOICE",
       "invoiceNumber": "INV-2024-001",
-      "invoiceDate": "2024-01-15",
-      "totalAmount": 1500.00,
-      "currency": "EUR"
+      "vendor": {
+        "name": "Acme Corp",
+        "vatNumber": "FR12345678901"
+      },
+      "amounts": {
+        "netAmount": 1000.00,
+        "taxAmount": 200.00,
+        "grossAmount": 1200.00,
+        "currency": "EUR"
+      }
     }
   }
 }
 ```
 
-## Retrieve Processed Invoice
-
-Once processed, access the structured invoice:
+### 3. Access Processed Invoice
 
 ```bash
 curl https://back.flowieapp.com/invoices/{invoice_id} \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
+## AI Models
+
+| Provider | Model | Role |
+|----------|-------|------|
+| **OpenAI** | GPT-4 Vision | Primary extraction |
+| **Google** | Gemini Pro Vision | Ensemble |
+| **Anthropic** | Claude Vision | Ensemble |
+
+The ensemble approach cross-validates results for higher accuracy.
+
+## Extracted Fields
+
+| Category | Fields |
+|----------|--------|
+| **Header** | Invoice number, dates, currency |
+| **Vendor** | Name, VAT, address, bank details |
+| **Amounts** | Net, tax, gross, tax breakdown |
+| **Lines** | Description, quantity, unit price, tax |
+| **References** | PO number, contract, delivery |
+
+## Confidence Scoring
+
+| Score | Action |
+|-------|--------|
+| **95%+** | Auto-approve candidate |
+| **80-94%** | Review recommended |
+| **60-79%** | Manual review |
+| **<60%** | Manual entry |
+
+## Webhooks
+
+Get notified when processing completes:
+
+```json
+{
+  "event": "document.processed",
+  "data": {
+    "documentId": "doc_xyz789",
+    "invoiceId": "inv_abc123",
+    "status": "completed",
+    "confidence": 0.94
+  }
+}
+```
+
 ## Authentication
 
-All requests require a Bearer token:
+All requests require Bearer token:
 
 ```bash
 curl https://back.flowieapp.com/invoices \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
-See [Authentication](/authentication) for obtaining tokens via OAuth 2.0.
+See [Authentication](/authentication) for OAuth 2.0 setup.
 
 ## API Availability
 
 <Info>
-  **Read-only API** - The API currently supports reading processed data. Document upload and invoice creation via API is coming soon. Use the [Flowie web app](https://app.flowieapp.com) or email forwarding for uploads.
+  **Read-only API** - Document upload and data retrieval are available. Write operations (creating invoices manually) coming soon.
 </Info>
-
-## Webhook Notifications
-
-Get notified when invoice processing completes:
-
-```json
-{
-  "event": "invoice.processed",
-  "data": {
-    "invoiceId": "inv_abc123",
-    "documentId": "doc_xyz789",
-    "status": "ready_for_approval",
-    "extractedFields": {
-      "confidence": 0.95
-    }
-  }
-}
-```
 
 ## Response Format
 
@@ -151,7 +209,7 @@ Get notified when invoice processing completes:
   "data": {
     "id": "inv_abc123",
     "number": "INV-2024-001",
-    "amount": 1500.00,
+    "amount": 1200.00,
     "currency": "EUR"
   }
 }
@@ -163,13 +221,7 @@ Get notified when invoice processing completes:
 {
   "error": {
     "code": "validation_error",
-    "message": "Invalid file format",
-    "details": [
-      {
-        "field": "file",
-        "message": "Unsupported file type"
-      }
-    ]
+    "message": "Invalid file format"
   }
 }
 ```
