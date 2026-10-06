@@ -44,7 +44,7 @@ description: "Retrieve a list of invoices"
 
 <CodeGroup>
 ```bash curl
-curl https://back.flowieapp.com/invoices \
+curl https://back.p2p-flowie.com/invoices \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -52,7 +52,7 @@ curl https://back.flowieapp.com/invoices \
 import requests
 
 response = requests.get(
-    "https://back.flowieapp.com/invoices",
+    "https://back.p2p-flowie.com/invoices",
     headers={"Authorization": "Bearer YOUR_TOKEN"},
     params={"status": "pending_approval"}
 )

@@ -1,18 +1,18 @@
 ---
 title: "Flowie E-Invoicing"
-description: "AI-powered invoice processing using GPT-4, Gemini, and Claude"
+description: "Invoice processing with LLM-based extraction mapped to EN 16931"
 ---
 
 ## AI-Powered E-Invoicing
 
-Upload invoices in **any format** - PDF, images, or electronic standards. Flowie's AI ensemble extracts structured data automatically using GPT-4 Vision, Gemini Pro, and Claude.
+Upload invoices in **any format** - PDF, images, or electronic standards. Flowie uses LLM-based extraction mapped to EN 16931 fields, with human review for low-confidence fields.
 
 <CardGroup cols={2}>
   <Card title="Any Format" icon="files" href="/concepts/invoices">
     PDF, images, PEPPOL, UBL, Factur-X, SAP IDOC
   </Card>
-  <Card title="AI Ensemble" icon="brain" href="/concepts/invoices#ai-models">
-    GPT-4 + Gemini + Claude for 95%+ accuracy
+  <Card title="AI Extraction" icon="brain" href="/concepts/invoices#ai-extraction">
+    LLM-based extraction mapped to EN 16931 fields
   </Card>
   <Card title="Auto-Matching" icon="link" href="/concepts/invoices#entity-resolution">
     Suppliers, POs, cost centers
@@ -57,7 +57,7 @@ graph LR
     PDF, image, XML, or hybrid format
   </Step>
   <Step title="AI processes document">
-    Three vision models extract data in parallel
+    LLM-based extraction maps the content to EN 16931 fields; low-confidence fields are flagged for human review
   </Step>
   <Step title="Auto-validation">
     VAT verification, duplicate detection, amount checks
@@ -71,7 +71,7 @@ graph LR
 
 ```bash
 # Upload an invoice
-curl -X POST https://back.flowieapp.com/doc/organizations/{org_id}/documents \
+curl -X POST https://back.p2p-flowie.com/doc/organizations/{org_id}/documents \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -F "file=@invoice.pdf"
 ```
@@ -95,15 +95,9 @@ curl -X POST https://back.flowieapp.com/doc/organizations/{org_id}/documents \
 }
 ```
 
-## AI Models
+## AI Extraction
 
-| Provider | Model | Role |
-|----------|-------|------|
-| **OpenAI** | GPT-4 Vision | Primary |
-| **Google** | Gemini Pro Vision | Ensemble |
-| **Anthropic** | Claude Vision | Ensemble |
-
-Multi-model ensemble ensures high accuracy through cross-validation.
+LLM-based extraction mapped to EN 16931 fields; human review for low-confidence fields.
 
 ## Compliance
 
@@ -116,14 +110,17 @@ Multi-model ensemble ensures high accuracy through cross-validation.
 
 ## Base URL
 
-```
-https://back.flowieapp.com
-```
+| Environment | Base URL |
+|-------------|----------|
+| Production | `https://back.p2p-flowie.com` |
+| Sandbox / staging | `https://back.flowie.ink` |
+
+The Exchange API (e-invoicing send/receive, directory, lifecycle) is served under the `/exchange` prefix, e.g. `https://back.p2p-flowie.com/exchange/v1/...` (sandbox: `https://back.flowie.ink/exchange/v1/...`).
 
 ## Authentication
 
 ```bash
-curl https://back.flowieapp.com/invoices \
+curl https://back.p2p-flowie.com/invoices \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -151,10 +148,10 @@ curl https://back.flowieapp.com/invoices \
 ## Support
 
 <CardGroup cols={2}>
-  <Card title="Contact Support" icon="headset" href="mailto:support@flowieapp.com">
+  <Card title="Contact Support" icon="headset" href="mailto:support@flowie.fr">
     Get help from our team
   </Card>
-  <Card title="API Status" icon="signal" href="https://status.flowieapp.com">
+  <Card title="API Status" icon="signal" href="https://flowie.betteruptime.com">
     Service status page
   </Card>
 </CardGroup>

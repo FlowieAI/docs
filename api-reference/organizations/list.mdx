@@ -32,7 +32,7 @@ Returns a list of organizations that the authenticated user has access to.
 
 <CodeGroup>
 ```bash curl
-curl https://back.flowieapp.com/organizations \
+curl https://back.p2p-flowie.com/organizations \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -40,7 +40,7 @@ curl https://back.flowieapp.com/organizations \
 import requests
 
 response = requests.get(
-    "https://back.flowieapp.com/organizations",
+    "https://back.p2p-flowie.com/organizations",
     headers={"Authorization": "Bearer YOUR_TOKEN"}
 )
 organizations = response.json()["data"]

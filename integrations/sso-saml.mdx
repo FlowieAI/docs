@@ -20,13 +20,13 @@ Flowie supports SAML 2.0 for enterprise Single Sign-On integration with your ide
 
 ### Step 1: Get Flowie SAML Settings
 
-From **Settings > Security > SSO**, copy:
+Your Flowie contact provides the SAML service-provider values for your organization:
 
 | Setting | Value |
 |---------|-------|
-| Entity ID | `https://auth.flowieapp.com/saml/YOUR_ORG` |
-| ACS URL | `https://auth.flowieapp.com/saml/callback` |
-| SLO URL | `https://auth.flowieapp.com/saml/logout` |
+| Entity ID | Provided by Flowie during SSO onboarding |
+| ACS URL | Provided by Flowie during SSO onboarding |
+| SLO URL | Provided by Flowie during SSO onboarding |
 
 ### Step 2: Configure Your IdP
 
@@ -61,6 +61,6 @@ Enable JIT to automatically create user accounts on first login:
 ## Testing
 
 1. Open an incognito window
-2. Navigate to `https://app.flowieapp.com/sso/YOUR_ORG`
+2. Navigate to `https://app.flowie.me/sso/YOUR_ORG`
 3. You should be redirected to your IdP
 4. After authentication, you'll be logged into Flowie

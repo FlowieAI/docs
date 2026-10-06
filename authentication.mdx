@@ -9,7 +9,7 @@ The Flowie API uses OAuth 2.0 Bearer tokens for authentication. All API requests
 
 ## Getting Your Credentials
 
-1. Log in to the [Flowie Dashboard](https://app.flowieapp.com)
+1. Log in to the [Flowie Dashboard](https://app.flowie.me)
 2. Navigate to **Settings** > **API & Integrations**
 3. Click **Create API Client**
 4. Copy your Client ID and Client Secret
@@ -29,7 +29,7 @@ curl --request POST \
   --data '{
     "client_id": "YOUR_CLIENT_ID",
     "client_secret": "YOUR_CLIENT_SECRET",
-    "audience": "https://auth.flowieapp.com",
+    "audience": "https://auth.flowie.me",
     "grant_type": "client_credentials"
   }'
 ```
@@ -49,7 +49,7 @@ curl --request POST \
 Include the token in all API requests:
 
 ```bash
-curl https://back.flowieapp.com/invoices \
+curl https://back.p2p-flowie.com/invoices \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
@@ -77,7 +77,7 @@ class FlowieAuth:
             json={
                 "client_id": self.client_id,
                 "client_secret": self.client_secret,
-                "audience": "https://auth.flowieapp.com",
+                "audience": "https://auth.flowie.me",
                 "grant_type": "client_credentials"
             }
         )

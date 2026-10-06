@@ -138,7 +138,7 @@
       "anchors": [
         {
           "anchor": "API Status",
-          "href": "https://status.flowieapp.com",
+          "href": "https://flowie.betteruptime.com",
           "icon": "signal"
         },
         {
@@ -157,13 +157,13 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:support@flowieapp.com"
+        "href": "mailto:support@flowie.fr"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://app.flowieapp.com"
+      "href": "https://app.flowie.me"
     }
   },
   "contextual": {
@@ -185,7 +185,7 @@
     }
   },
   "api": {
-    "baseUrl": "https://back.flowieapp.com",
+    "baseUrl": "https://back.p2p-flowie.com",
     "auth": {
       "method": "bearer"
     }

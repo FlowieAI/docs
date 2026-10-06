@@ -5,14 +5,14 @@ description: "AI-powered document processing for any invoice format"
 
 ## What is Flowie E-Invoicing?
 
-Flowie is an **AI-powered e-invoicing platform** that processes documents using a multi-model ensemble of GPT-4 Vision, Gemini Pro Vision, and Claude Vision. Upload any invoice format and receive structured, validated data.
+Flowie is an **AI-powered e-invoicing platform** that processes documents using LLM-based extraction mapped to EN 16931 fields, with human review for low-confidence fields. Upload any invoice format and receive structured, validated data.
 
 <CardGroup cols={2}>
   <Card title="Any Format" icon="files">
     PDF, images, UBL, PEPPOL, Factur-X, SAP IDOC
   </Card>
-  <Card title="AI Ensemble" icon="brain">
-    GPT-4 + Gemini + Claude for maximum accuracy
+  <Card title="AI Extraction" icon="brain">
+    LLM-based extraction mapped to EN 16931 fields
   </Card>
   <Card title="Auto-Matching" icon="link">
     Suppliers, POs, and cost centers
@@ -55,7 +55,7 @@ Upload → Format Detection → OCR/Parse → AI Extraction → Validation → R
     System identifies format (PDF, XML, hybrid)
   </Step>
   <Step title="Extraction">
-    AI ensemble extracts: vendor, amounts, line items, dates
+    LLM-based extraction maps vendor, amounts, line items and dates to EN 16931 fields
   </Step>
   <Step title="Validation">
     VAT verification, duplicate check, PO matching
@@ -64,9 +64,12 @@ Upload → Format Detection → OCR/Parse → AI Extraction → Validation → R
 
 ## Base URL
 
-```
-https://back.flowieapp.com
-```
+| Environment | Base URL |
+|-------------|----------|
+| Production | `https://back.p2p-flowie.com` |
+| Sandbox / staging | `https://back.flowie.ink` |
+
+The Exchange API (e-invoicing send/receive, directory, lifecycle) is served under the `/exchange` prefix, e.g. `https://back.p2p-flowie.com/exchange/v1/...` (sandbox: `https://back.flowie.ink/exchange/v1/...`).
 
 ## Service Endpoints
 
@@ -84,7 +87,7 @@ https://back.flowieapp.com
 ### 1. Upload a Document
 
 ```bash
-curl -X POST https://back.flowieapp.com/doc/organizations/{org_id}/documents \
+curl -X POST https://back.p2p-flowie.com/doc/organizations/{org_id}/documents \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -F "file=@invoice.pdf"
 ```
@@ -102,7 +105,7 @@ curl -X POST https://back.flowieapp.com/doc/organizations/{org_id}/documents \
 ### 2. Check Processing Status
 
 ```bash
-curl https://back.flowieapp.com/doc/organizations/{org_id}/documents/{doc_id} \
+curl https://back.p2p-flowie.com/doc/organizations/{org_id}/documents/{doc_id} \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -134,19 +137,13 @@ curl https://back.flowieapp.com/doc/organizations/{org_id}/documents/{doc_id} \
 ### 3. Access Processed Invoice
 
 ```bash
-curl https://back.flowieapp.com/invoices/{invoice_id} \
+curl https://back.p2p-flowie.com/invoices/{invoice_id} \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
-## AI Models
+## AI Extraction
 
-| Provider | Model | Role |
-|----------|-------|------|
-| **OpenAI** | GPT-4 Vision | Primary extraction |
-| **Google** | Gemini Pro Vision | Ensemble |
-| **Anthropic** | Claude Vision | Ensemble |
-
-The ensemble approach cross-validates results for higher accuracy.
+LLM-based extraction mapped to EN 16931 fields; human review for low-confidence fields.
 
 ## Extracted Fields
 
@@ -160,12 +157,7 @@ The ensemble approach cross-validates results for higher accuracy.
 
 ## Confidence Scoring
 
-| Score | Action |
-|-------|--------|
-| **95%+** | Auto-approve candidate |
-| **80-94%** | Review recommended |
-| **60-79%** | Manual review |
-| **<60%** | Manual entry |
+Each extracted field carries a confidence score (0-1). Fields below your configured threshold are flagged for human review before the document moves on.
 
 ## Webhooks
 
@@ -188,7 +180,7 @@ Get notified when processing completes:
 All requests require Bearer token:
 
 ```bash
-curl https://back.flowieapp.com/invoices \
+curl https://back.p2p-flowie.com/invoices \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
