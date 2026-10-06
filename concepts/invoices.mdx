@@ -5,7 +5,7 @@ description: "AI-powered document processing pipeline for any invoice format"
 
 ## Overview
 
-Flowie uses a **multi-model AI ensemble** to extract data from any invoice format. Upload PDF, images, or electronic invoices - our pipeline automatically detects the format and extracts structured data.
+Flowie uses **LLM-based extraction mapped to EN 16931 fields** to extract data from any invoice format, with human review for low-confidence fields. Upload PDF, images, or electronic invoices - our pipeline automatically detects the format and extracts structured data.
 
 ## Supported Document Types
 
@@ -37,7 +37,7 @@ Flowie uses a **multi-model AI ensemble** to extract data from any invoice forma
 | **SAP IDOC** | INVOIC_02 | SAP intermediate document format |
 
 <Info>
-  Structured formats (PEPPOL, UBL, Factur-X) are parsed directly without OCR, providing 100% accuracy for compliant documents.
+  Structured formats (PEPPOL, UBL, Factur-X) are parsed directly without OCR.
 </Info>
 
 ## AI Processing Pipeline
@@ -51,7 +51,7 @@ graph TD
     
     C --> F[Image Conversion]
     F --> G[Text Region Detection]
-    G --> H[AI Ensemble Extraction]
+    G --> H[LLM-based Extraction]
     
     D --> I[Schema Validation]
     E --> I
@@ -80,13 +80,8 @@ graph TD
     EasyOCR identifies text regions (bounding boxes) in document images, enabling precise field extraction.
   </Step>
   
-  <Step title="AI Ensemble Extraction">
-    Three AI vision models process the document in parallel:
-    - **OpenAI GPT-4 Vision** (primary)
-    - **Google Gemini Pro Vision**
-    - **Anthropic Claude Vision**
-    
-    Results are combined for higher accuracy and confidence scoring.
+  <Step title="LLM-based Extraction">
+    LLM-based extraction maps the document content to EN 16931 fields, with a confidence score per field. Low-confidence fields are flagged for human review.
   </Step>
   
   <Step title="Entity Resolution">
@@ -101,17 +96,9 @@ graph TD
   </Step>
 </Steps>
 
-## AI Models
+## AI Extraction
 
-### Vision Models (Data Extraction)
-
-| Provider | Model | Role |
-|----------|-------|------|
-| **OpenAI** | GPT-4 Vision | Primary extraction |
-| **Google** | Gemini Pro Vision | Ensemble validation |
-| **Anthropic** | Claude Vision | Ensemble validation |
-
-The ensemble approach improves accuracy by cross-validating results across multiple models.
+LLM-based extraction mapped to EN 16931 fields; human review for low-confidence fields.
 
 ### OCR Stack
 
@@ -200,12 +187,7 @@ The AI extracts these fields automatically:
 
 Each extraction includes a confidence score (0-1):
 
-| Score | Interpretation |
-|-------|----------------|
-| **0.95+** | High confidence - auto-approve candidate |
-| **0.80-0.94** | Good confidence - review recommended |
-| **0.60-0.79** | Medium confidence - manual review required |
-| **< 0.60** | Low confidence - manual data entry needed |
+Fields below your configured confidence threshold are flagged for human review; higher-confidence fields still go through your normal approval workflow.
 
 ## Document Search (RAG)
 

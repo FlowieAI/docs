@@ -44,7 +44,7 @@ description: "Retrieve a single invoice by ID"
 
 <CodeGroup>
 ```bash curl
-curl https://back.flowieapp.com/invoices/inv_abc123 \
+curl https://back.p2p-flowie.com/invoices/inv_abc123 \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
@@ -52,7 +52,7 @@ curl https://back.flowieapp.com/invoices/inv_abc123 \
 import requests
 
 response = requests.get(
-    "https://back.flowieapp.com/invoices/inv_abc123",
+    "https://back.p2p-flowie.com/invoices/inv_abc123",
     headers={"Authorization": "Bearer YOUR_TOKEN"}
 )
 invoice = response.json()["data"]

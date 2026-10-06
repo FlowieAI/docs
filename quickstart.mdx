@@ -27,7 +27,7 @@ curl --request POST \
   --data '{
     "client_id": "YOUR_CLIENT_ID",
     "client_secret": "YOUR_CLIENT_SECRET",
-    "audience": "https://auth.flowieapp.com",
+    "audience": "https://auth.flowie.me",
     "grant_type": "client_credentials"
   }'
 ```
@@ -51,7 +51,7 @@ Response:
 Use your token to list invoices:
 
 ```bash
-curl https://back.flowieapp.com/invoices \
+curl https://back.p2p-flowie.com/invoices \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json"
 ```
@@ -83,7 +83,7 @@ Response:
 Create a new invoice via API:
 
 ```bash
-curl -X POST https://back.flowieapp.com/invoices \
+curl -X POST https://back.p2p-flowie.com/invoices \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
