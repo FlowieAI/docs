@@ -1,0 +1,58 @@
+---
+title: "Compliance check"
+api: "POST /contracts/api/v1/organizations/{organizationId}/compliance/check"
+description: "Check a purchase order or invoice against the contract that covers it"
+---
+
+<Note>
+  **Beta — staging only.** Purchase orders and invoices created in Flowie are checked automatically; this endpoint is a dry run for a document you are about to send or receive.
+</Note>
+
+Your organization must be the buyer (`payerId`) or the seller (`sellerId`) of the document. A beneficiary of a group contract only gets the checks on operational terms (price, payment terms, Incoterm); the cap and the group's spend are not disclosed.
+
+## Body
+
+<ParamField body="document" type="object" required>
+  The document in the transaction-documents shape: `id`, `documentType`, `payerId`, `sellerId`, `issuedAt`, `dueDate`, `currency`, `incoterms`, `paymentTermsId`, `contractReference`, `lineItems[]` (`lineNumber`, `description`, `quantity`, `unitPrice`, `supplierItemId`, `buyerItemId`, `priceWithoutTax`). Up to 5000 lines.
+</ParamField>
+
+## Example
+
+```bash
+curl -X POST https://back.flowie.ink/contracts/api/v1/organizations/HOTEL_ORG_ID/compliance/check \
+  -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" \
+  -d '{"document": {"id": "inv-001", "documentType": "INVOICE", "payerId": "HOTEL_ORG_ID",
+       "sellerId": "SUPPLIER_ORG_ID", "issuedAt": "2026-06-10", "currency": "EUR", "incoterms": "EXW",
+       "lineItems": [{"lineNumber": 1, "quantity": "4", "unitPrice": "55", "supplierItemId": "ECO-DET-20"}]}}'
+```
+
+<ResponseExample>
+```json
+{
+  "result": "DEVIATION",
+  "contractId": "951f1269-aa37-4ccd-add6-d6fd38cf5ce9",
+  "findings": [
+    {"code": "PRICE_ABOVE_CONTRACT", "severity": "WARNING", "lineNumber": 1,
+     "expected": "50", "actual": "55", "amountAtStake": "20",
+     "message": "Line 1: unit price 55 above contracted 50."},
+    {"code": "INCOTERM_MISMATCH", "severity": "WARNING", "expected": "DAP", "actual": "EXW",
+     "message": "Incoterm EXW instead of contracted DAP."}
+  ]
+}
+```
+</ResponseExample>
+
+## Results and findings
+
+| `result` | Meaning |
+|---|---|
+| `COMPLIANT` | No warning |
+| `DEVIATION` | At least one warning (or blocking) finding |
+| `NO_CONTRACT` | No contract with this supplier covers the buyer on that date (off-contract spend) |
+| `NOT_APPLICABLE` | The contract's enforcement is `OFF` |
+
+| Finding | Severity |
+|---|---|
+| `PRICE_ABOVE_CONTRACT`, `PAYMENT_TERMS_MISMATCH`, `INCOTERM_MISMATCH`, `CURRENCY_MISMATCH`, `CAP_EXCEEDED` | `WARNING` (`BLOCKING` when the contract is in `BLOCK` mode) |
+| `CONTRACT_NOT_IN_FORCE`, `NO_COVERING_CONTRACT` | `WARNING` |
+| `ITEM_NOT_IN_CONTRACT`, `QUANTITY_OUTSIDE_TIERS`, `UNCONFIRMED_TERM`, `CONTRACT_REFERENCE_MISMATCH` | `INFO` |

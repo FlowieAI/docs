@@ -1,0 +1,27 @@
+---
+title: "Contract events"
+description: "Lifecycle and compliance events, usable as workflow triggers"
+---
+
+<Note>
+  **Beta — staging only.**
+</Note>
+
+Contract events are published on `persistent://flowie/transaction/public.contracts`. They are what Flowie workflows react to: approval when a contract goes to `IN_APPROVAL`, a renewal decision when the window opens, an alert when an invoice deviates.
+
+| Event | When |
+|---|---|
+| `CONTRACT_CREATED` | A contract is created |
+| `CONTRACT_UPDATED` | Header, parties, coverage, terms or documents changed (`details.changed`) |
+| `CONTRACT_STATUS_CHANGED` | Any status change (`details.previousStatus`, `details.status`, `details.reason`) |
+| `CONTRACT_ACTIVATED` | The contract becomes `ACTIVE` |
+| `CONTRACT_RENEWAL_WINDOW_OPENED` | The notice deadline is near |
+| `CONTRACT_RENEWED` | Tacit renewal applied (`details.previousEndDate`, `details.endDate`) |
+| `CONTRACT_EXPIRED` / `CONTRACT_TERMINATED` | The contract ended |
+| `CONTRACT_LINKED` / `CONTRACT_UNLINKED` | A purchase order, invoice, partnership… was linked or unlinked |
+| `CONTRACT_DOCUMENT_ATTACHED` | A file was attached |
+| `CONTRACT_DEVIATION_DETECTED` | A purchase order or invoice deviates (`details.findings`) |
+
+Every message carries `type`, `event-id` (stable across redeliveries: deduplicate on it), `aggregate-id` (the contract id), `aggregate-sequence-number` (strictly increasing per contract) and `timestamp`. The body is `{"currentState": {"contract": {...}}, "details": {...}}`.
+
+The full schema is the AsyncAPI document in the contracts service repository (`docs/asyncapi.yaml`).

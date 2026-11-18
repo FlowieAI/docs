@@ -1,0 +1,83 @@
+---
+title: "Contracts Overview"
+description: "Contract records, coverage, links and compliance checks"
+---
+
+<Note>
+  **Beta — staging only.** Base URL: `https://back.flowie.ink/contracts`. Production is not available yet.
+</Note>
+
+## Base URL and authentication
+
+```
+https://back.flowie.ink/contracts/api/v1/organizations/{organizationId}/...
+```
+
+Every call takes a Flowie user token (`Authorization: Bearer …`). The `organizationId` in the path is the organization you act as: your token must name it, or name an organization above it in your group. What that organization can see of a contract is described in [Contracts](/concepts/contracts#who-sees-what).
+
+## Endpoints
+
+| Method | Path | Purpose |
+|---|---|---|
+| `POST` | `/contracts` | Create a contract with its parties, coverage and terms |
+| `GET` | `/contracts` | List contracts (filters: `status`, `supplierId`, `contractType`, `endingBefore`, `q`) |
+| `GET` | `/contracts/coverage?supplierId=` | Is there a contract with this supplier for my organization? |
+| `GET` | `/contracts/{id}` | Read a contract |
+| `PATCH` | `/contracts/{id}` | Update header fields (optimistic lock on `revision`) |
+| `POST` | `/contracts/{id}/transitions` | Change the status |
+| `GET` | `/contracts/{id}/history` | Status history |
+| `GET` | `/contracts/{id}/summary` | Invoiced spend, cap consumption, linked objects, deviations |
+| `POST` / `DELETE` | `/contracts/{id}/parties[/{partyId}]` | Parties |
+| `PUT` | `/contracts/{id}/coverage` | Beneficiaries, categories, sites |
+| `POST` | `/contracts/{id}/coverage/refresh` | Re-read a group's subsidiaries |
+| `POST` / `PUT` / `DELETE` | `/contracts/{id}/terms[/{termId}]` | Typed terms (a price grid is one call) |
+| `POST` | `/contracts/{id}/terms/{termId}/review?decision=CONFIRMED` | Confirm or reject an extracted term |
+| `POST` / `DELETE` | `/contracts/{id}/documents[/{documentId}]` | Attach a file already uploaded to Flowie Documents |
+| `POST` / `GET` / `DELETE` | `/contracts/{id}/links[/{linkId}]` | Link purchase orders, invoices, partnerships, catalogs, products, budgets |
+| `GET` | `/objects/{objectType}/{objectId}/contracts` | The contracts linked to a purchase order, invoice, partnership… |
+| `POST` | `/compliance/check` | Check a purchase order or invoice against its contract (dry run) |
+| `GET` | `/contracts/{id}/concerto` | Export as Accord Project Concerto JSON |
+| `GET` | `/api/v1/concerto/model` | The Concerto model (`.cto`) |
+
+## Create a contract
+
+```bash
+curl -X POST https://back.flowie.ink/contracts/api/v1/organizations/ORG_ID/contracts \
+  -H "Authorization: Bearer YOUR_TOKEN" -H "Content-Type: application/json" \
+  -d '{
+    "reference": "FW-ECOLAB-2026",
+    "title": "Hygiene products framework",
+    "contractType": "FRAMEWORK",
+    "status": "ACTIVE",
+    "startDate": "2026-01-01",
+    "endDate": "2026-12-31",
+    "noticePeriodDays": 90,
+    "renewalRule": "TACIT",
+    "renewalTermMonths": 12,
+    "parties": [
+      {"organizationId": "ORG_ID", "role": "BUYER"},
+      {"organizationId": "SUPPLIER_ORG_ID", "role": "SUPPLIER"}
+    ],
+    "coverage": [{"kind": "ORGANIZATION", "value": "HOTEL_ORG_ID"}],
+    "terms": [
+      {"kind": "PRICE", "label": "Dishwasher detergent 20L", "supplierItemId": "ECO-DET-20", "unitPrice": "50"},
+      {"kind": "PRICE", "label": "Glass cleaner 5L", "supplierItemId": "ECO-GLS-5", "unitPrice": "10", "minQuantity": "100"},
+      {"kind": "PAYMENT_TERMS", "dueDays": 45, "endOfMonth": true},
+      {"kind": "INCOTERM", "incoterm": "DAP"},
+      {"kind": "CAP", "amount": "250000"}
+    ]
+  }'
+```
+
+Amounts are decimal **strings**. Price lines match purchase order and invoice lines on `supplierItemId`, then `buyerItemId`, then the exact description.
+
+## Errors
+
+| Status | Meaning |
+|---|---|
+| `401` | Missing or invalid token |
+| `403` | Your token does not name the organization, or only the owner may do this |
+| `404` | The contract does not exist **for your organization** |
+| `409` | Duplicate reference, stale `revision`, or a transition not allowed from the current status |
+| `413` | Request body too large |
+| `422` | Invalid body (e.g. a `PRICE` term without `unitPrice`) |
