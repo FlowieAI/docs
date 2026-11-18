@@ -1,0 +1,59 @@
+---
+title: "Contracts"
+description: "Signed agreements as structured data, enforced on every purchase order and invoice"
+---
+
+<Note>
+  **Beta — staging only.** The Contracts API is live on staging (`https://back.flowie.ink/contracts`). It is not yet available in production.
+</Note>
+
+## Why contracts in Flowie
+
+Most of the value lost on a contract is lost **after** signature: a price nobody checks, a payment term that drifts, a renewal missed by a week. Flowie sees every purchase order and invoice, so it checks them against the contract that covers them.
+
+A contract in Flowie is **structured data with the signed PDF as evidence**:
+
+| Part | What it holds |
+|---|---|
+| **Record** | Reference, type (framework, application, service, NDA, lease…), dates, notice period, renewal rule |
+| **Parties** | Organizations and their role: buyer, supplier, co-contractor, subcontractor, guarantor, mandatary |
+| **Coverage** | Who may buy under it: listed organizations (e.g. franchised hotels under a group framework), or a group and its subsidiaries |
+| **Terms** | Typed commercial terms: prices and volume tiers, payment terms, Incoterm, cap, minimum commitment, rebate |
+| **Documents** | The signed contract, amendments, annexes and certificates, stored in Flowie Documents |
+| **Links** | The purchase orders, invoices, partnerships, catalogs and products the contract governs |
+
+## Lifecycle
+
+```
+REQUESTED → IN_PREPARATION → IN_APPROVAL → PENDING_SIGNATURE → SIGNED → ACTIVE
+                                                                   ↓
+                                    RENEWAL_WINDOW → (renewed) ACTIVE | TERMINATING → TERMINATED
+                                                                   ↓
+                                                                EXPIRED → ARCHIVED
+```
+
+Already-signed paper (the usual case) is created directly as `SIGNED` or `ACTIVE`. A daily job activates contracts on their start date, opens the renewal window before the notice deadline (30 days by default), applies tacit renewals and expires the rest. Approvals are run by Flowie workflows.
+
+## Who sees what
+
+| Your organization is… | You see |
+|---|---|
+| The owner of the contract | Everything, and you can change it |
+| A party (e.g. the supplier) | Everything, read-only |
+| A beneficiary (listed in the coverage) | A summary: supplier, dates and the confirmed prices, payment terms, Incoterm and lead time you need to order. Never the files, the cap or commitment, or other beneficiaries' purchases |
+| Anyone else | Nothing: the contract does not exist for you |
+
+## Compliance checks
+
+Every purchase order, purchase request, quote and invoice is checked against the contract covering the buyer and the supplier on its date:
+
+- unit price against the contracted price or volume tier (with an optional tolerance), with the amount at stake
+- payment terms (e.g. 45 days end of month), Incoterm and currency
+- cap against the invoiced spend (credit notes deducted)
+- an expired contract, or a quoted contract reference that does not match
+
+Only terms a person has **confirmed** are enforced. Terms extracted by AI are marked `AI_PROPOSED` and shown, never enforced. Deviations are **warnings** by default; a contract can be switched to `BLOCK`.
+
+## Interoperability
+
+Contracts export to the [Accord Project](https://accordproject.org) **Concerto** format (`com.flowie.contracts@1.0.0`), so other contract tools and AI agents can read them.

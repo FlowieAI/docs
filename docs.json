@@ -27,7 +27,8 @@
               "concepts/invoices",
               "concepts/purchase-orders",
               "concepts/workflows",
-              "concepts/budgets"
+              "concepts/budgets",
+              "concepts/contracts"
             ]
           },
           {
@@ -89,6 +90,14 @@
               "api-reference/purchase-orders/list",
               "api-reference/purchase-orders/get",
               "api-reference/purchase-orders/create"
+            ]
+          },
+          {
+            "group": "Contracts",
+            "pages": [
+              "api-reference/contracts/overview",
+              "api-reference/contracts/compliance",
+              "api-reference/contracts/events"
             ]
           },
           {
